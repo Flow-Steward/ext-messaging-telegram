@@ -1,0 +1,13 @@
+component_id: quick_start
+type: markdown
+title: Quick start
+content: |
+  1. Open the verified [@BotFather](https://t.me/BotFather) account in Telegram.
+  2. Run `/newbot` and follow Telegram's prompts to name the bot.
+  3. Copy the generated Bot API token into the **Bot Token** card below.
+  4. Save the token and confirm the detected bot username with **Verify**.
+  5. Add the bot to the target chat or channel. For private chats and groups, send a message there so discovery has an update to read.
+  6. Continue to **Chats & Channels** and save the discovered chat as a named Flow Steward destination.
+  7. Configure **Inbound** only when replies or approve/reject/abort human decisions are required.
+
+  Telegram's official guide: [Bot tutorial](https://core.telegram.org/bots/tutorial).

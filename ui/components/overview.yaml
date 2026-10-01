@@ -1,0 +1,7 @@
+component_id: telegram_overview
+type: markdown
+title: About
+content: |
+  Sends project events to Telegram chats through the Bot API: job failures and completions, approval requests and decisions. Each project binds its own bot token and named channels; replies and approve/reject/abort decisions come back through the optional inbound path.
+
+  Start on **Setup**, then **Chats & Channels**. **Inbound** is only for two-way flows.

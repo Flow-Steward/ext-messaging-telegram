@@ -1,0 +1,31 @@
+component_id: channel_test_grid
+anchor_id: channel_test_grid
+type: grid
+title: Test a Channel
+query_id: list_channels
+columns:
+- key: display_name
+  label: Channel
+  type: text
+- key: channel_id
+  label: Channel ID
+  type: text
+  monospace: true
+- key: enabled
+  label: Enabled
+  type: text
+- key: capabilities.notify
+  label: Notify
+  type: text
+row_actions:
+- action_id: test_delivery
+  label: Send test
+  scope: row
+  visible_if:
+  - path: enabled
+    eq: true
+  - path: capabilities.notify
+    eq: true
+empty_state:
+  title: No channels to test
+  description: Save and enable a channel with Notify capability before sending a test.

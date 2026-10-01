@@ -1,0 +1,6 @@
+component_id: telegram_webhook_setup
+type: callback_setup
+title: Webhook Setup
+callback_id: updates
+configure_action_id: configure_webhook
+status_action_id: get_webhook_status

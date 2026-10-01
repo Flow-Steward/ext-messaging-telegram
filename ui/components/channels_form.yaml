@@ -1,0 +1,66 @@
+component_id: channels_form
+anchor_id: channels_form
+type: form
+title: Channels
+ui_schema:
+  version: '1'
+  type: form_ui
+  layout:
+    columns: 1
+  sections:
+  - section_id: channels
+    title: Channels
+    variant: card
+    field_ids:
+    - channels
+  fields:
+  - field_id: channels
+    path: channels
+    widget: repeater
+    section_id: channels
+    label: Telegram Channels
+    help: Add named project-scoped channels for notifications and human decisions.
+    props:
+      fields:
+      - field_id: channel_id
+        path: channel_id
+        widget: text
+        label: Channel ID
+        placeholder: ops_alerts
+        required: true
+        props:
+          immutable_on_edit: true
+          unique_in_list: true
+      - field_id: display_name
+        path: display_name
+        widget: text
+        label: Display Name
+        placeholder: Ops Alerts
+        required: true
+      - field_id: chat_id
+        path: chat_id
+        widget: text
+        label: Chat ID
+        placeholder: '-1001234567890'
+        required: true
+      - field_id: enabled
+        path: enabled
+        widget: boolean
+        label: Enabled
+        default: true
+      - field_id: notify
+        path: capabilities.notify
+        widget: boolean
+        label: Notify Capability
+        default: true
+      - field_id: human_decision
+        path: capabilities.human_decision
+        widget: boolean
+        label: Human Decision Capability
+        default: false
+  actions:
+    save_label: Save channels
+data:
+  load_query: list_channels
+  save_action: upsert_channel
+  save_mode: replace

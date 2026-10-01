@@ -1,0 +1,582 @@
+actions:
+- action_id: deliver_notification
+  workflow_visible: false
+  title: Deliver Notification
+  description: Send a routed project notification through Telegram.
+  required_scopes:
+  - notify:dispatch
+  handler:
+    mode: extension
+    config:
+      runtime_resources:
+        project_connection: true
+        provider_key: flowsteward.telegram
+        provider_secrets:
+        - bot_token
+      host_mutations:
+      - project_connection_upsert
+      pre_dispatch_host_mutations:
+      - project_connection_upsert
+  mutates_platform: true
+  command_type: invoke_extension_action
+  parameters:
+  - name: event
+    type: object
+    required: true
+  - name: route
+    type: object
+    required: true
+  result_fields:
+  - delivered
+  - provider_message_id
+  error_codes:
+  - project_connection_required
+  - channel_id_required
+  - bot_token_or_chat_id_required
+  - unknown_channel_id
+  - channel_disabled
+  - channel_missing_notify
+  - channel_missing_human_decision
+  - telegram_send_ambiguous
+  - telegram_reply_target_invalid
+  - telegram_send_rejected
+  - telegram_send_request_invalid
+- action_id: retry_delivery
+  workflow_visible: false
+  title: Retry Delivery
+  description: Re-attempt a failed notification delivery.
+  required_scopes:
+  - notify:dispatch
+  handler:
+    mode: extension
+    config:
+      runtime_resources:
+        project_connection: true
+        provider_key: flowsteward.telegram
+        provider_secrets:
+        - bot_token
+        notification_deliveries: true
+      host_mutations:
+      - notification_delivery_log
+  command_type: invoke_extension_action
+  mutates_platform: true
+  result_fields:
+  - message
+  - result.delivered
+  - result.provider_message_id
+  error_codes:
+  - project_context_required
+  - invalid_payload
+  - delivery_retry_unavailable
+  - delivery_not_found
+  - delivery_not_retryable
+  - bot_token_or_chat_id_required
+  - telegram_send_ambiguous
+  - telegram_reply_target_invalid
+  - telegram_send_rejected
+  - telegram_send_request_invalid
+- action_id: test_delivery
+  workflow_visible: false
+  title: Test Delivery
+  description: Send a test notification to verify configuration.
+  required_scopes:
+  - notify:dispatch
+  handler:
+    mode: extension
+    config:
+      runtime_resources:
+        project_connection: true
+        provider_key: flowsteward.telegram
+        provider_secrets:
+        - bot_token
+  mutates_platform: false
+  parameters:
+  - name: channel_id
+    type: string
+    required: true
+    description: Configured channel id selected from the channel test grid.
+  result_fields:
+  - message
+  - result.delivered
+  - result.provider_message_id
+  error_codes:
+  - project_context_required
+  - bot_token_required
+  - channel_required
+  - bot_token_or_chat_id_required
+  - unknown_channel_id
+  - channel_disabled
+  - channel_missing_notify
+  - telegram_send_ambiguous
+  - telegram_reply_target_invalid
+  - telegram_send_rejected
+  - telegram_send_request_invalid
+- action_id: save_config
+  workflow_visible: false
+  title: Save Configuration
+  description: Persist provider configuration changes.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: platform
+    operation: project_connection_config_patch
+    config:
+      connection_type_id: telegram_bot
+      fields:
+      - disable_web_page_preview
+      - message_prefix
+  mutates_platform: false
+  parameters:
+  - name: disable_web_page_preview
+    type: boolean
+    required: false
+  - name: message_prefix
+    type: string
+    required: false
+  result_fields:
+  - message
+  - values.disable_web_page_preview
+  - values.message_prefix
+  error_codes:
+  - invalid_payload
+  - project_context_required
+  - project_connection_storage_unavailable
+- action_id: save_inbound_settings
+  workflow_visible: false
+  title: Save Inbound Settings
+  description: Persist inbound mode and polling interval for this Telegram binding.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: platform
+    operation: project_connection_ingress_patch
+    config:
+      connection_type_id: telegram_bot
+      fields:
+      - inbound_mode
+      - polling_interval_seconds
+  command_type: invoke_extension_action
+  mutates_platform: true
+  parameters:
+  - name: inbound_mode
+    type: string
+    required: false
+  - name: polling_interval_seconds
+    type: integer
+    required: false
+  result_fields:
+  - message
+  - values.inbound_mode
+  - values.polling_interval_seconds
+  error_codes:
+  - invalid_payload
+  - project_context_required
+  - project_connection_storage_unavailable
+- action_id: save_secrets
+  workflow_visible: false
+  title: Save Secrets
+  description: Persist provider secret values.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: platform
+    operation: project_connection_secrets_save
+    config:
+      provider_key: flowsteward.telegram
+      connection_type_id: telegram_bot
+      secret_fields:
+      - input: bot_token
+        secret_key: bot_token
+  mutates_platform: false
+  parameters:
+  - name: bot_token
+    type: string
+    required: false
+    description: Telegram Bot API token to store for the selected project.
+  result_fields:
+  - message
+  - saved_keys
+  error_codes:
+  - invalid_payload
+  - project_context_required
+  - provider_secret_storage_unavailable
+  - provider_secret_storage_failed
+  - provider_secret_value_required
+- action_id: verify_bot_token
+  workflow_visible: false
+  title: Verify Bot Token
+  description: Confirm the saved bot token with Telegram getMe and show the bot username.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: extension
+    config:
+      runtime_resources:
+        project_connection: true
+        provider_key: flowsteward.telegram
+        provider_secrets:
+        - bot_token
+  result_fields:
+  - message
+  - result.verified
+  - result.bot_username
+  mutates_platform: false
+  error_codes:
+  - bot_token_required
+  - bot_token_rejected
+  - telegram_unreachable
+- action_id: resolve_chat
+  workflow_visible: false
+  title: Resolve Chat
+  description: Resolve a public Telegram @username or t.me link into a discovered chat entry.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: extension
+    config:
+      runtime_resources:
+        project_connection: true
+        provider_key: flowsteward.telegram
+        provider_secrets:
+        - bot_token
+      host_mutations:
+      - project_connection_upsert
+  command_type: invoke_extension_action
+  mutates_platform: true
+  parameters:
+  - name: chat_link
+    type: string
+    required: false
+  result_fields:
+  - message
+  - result.chat_id
+  error_codes:
+  - project_context_required
+  - project_connection_storage_unavailable
+  - bot_token_required
+  - chat_not_resolved
+- action_id: discover_chat
+  workflow_visible: false
+  title: Discover Chat
+  description: Start a guided discovery flow for Telegram chats that cannot be resolved directly.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: extension
+    config:
+      runtime_resources:
+        project_connection: true
+        provider_key: flowsteward.telegram
+        provider_secrets:
+        - bot_token
+      host_mutations:
+      - project_connection_upsert
+  command_type: invoke_extension_action
+  mutates_platform: true
+  parameters:
+  - name: chat_link
+    type: string
+    required: false
+  result_fields:
+  - message
+  - result.pending_discovery
+  error_codes:
+  - project_context_required
+  - bot_token_required
+- action_id: refresh_discovered_chats
+  workflow_visible: false
+  title: Refresh Discovered Chats
+  description: Poll Telegram for new updates and refresh the discovered chat list.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: extension
+    config:
+      runtime_resources:
+        project_connection: true
+        provider_key: flowsteward.telegram
+        provider_secrets:
+        - bot_token
+      host_mutations:
+      - project_connection_upsert
+  contract:
+    serialization:
+      resource: inbound_updates
+  command_type: invoke_extension_action
+  mutates_platform: true
+  result_fields:
+  - message
+  - result.processed_updates
+  - result.last_update_id
+  error_codes:
+  - project_context_required
+  - bot_token_required
+  - polling_unavailable
+  - polling_busy
+  - operation_serialization_unavailable
+  - operation_serialization_busy
+  - webhook_unavailable
+- action_id: save_discovered_chat
+  workflow_visible: false
+  title: Save Discovered Chat
+  description: Save a discovered Telegram chat as a normal named channel.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: extension
+    config:
+      runtime_resources:
+        project_connection: true
+      host_mutations:
+      - project_connection_upsert
+  command_type: invoke_extension_action
+  mutates_platform: true
+  parameters:
+  - name: chat_id
+    type: string
+    required: false
+  - name: channel_id
+    type: string
+    required: false
+  - name: display_name
+    type: string
+    required: false
+  - name: title
+    type: string
+    required: false
+  - name: username
+    type: string
+    required: false
+  result_fields:
+  - message
+  - values.channels
+  error_codes:
+  - project_context_required
+  - chat_not_resolved
+  - channel_already_exists
+  - channel_id_duplicate
+  - project_connection_storage_unavailable
+- action_id: upsert_channel
+  workflow_visible: false
+  title: Save Channels
+  description: Persist the project-scoped Telegram channel list.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: platform
+    operation: project_connection_list_replace
+    config:
+      connection_type_id: telegram_bot
+      list_key: channels
+      item_key: channel_id
+      duplicate_error: duplicate_channel_id
+      immutable_error: immutable_channel_id
+  command_type: invoke_extension_action
+  mutates_platform: true
+  parameters:
+  - name: channels
+    type: array
+    required: true
+  result_fields:
+  - message
+  - values.channels
+  error_codes:
+  - project_context_required
+  - invalid_payload
+  - duplicate_channel_id
+  - immutable_channel_id
+  - project_connection_storage_unavailable
+- action_id: toggle_channel
+  workflow_visible: false
+  title: Toggle Channel
+  description: Enable or disable a Telegram channel.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: platform
+    operation: project_connection_list_toggle
+    config:
+      connection_type_id: telegram_bot
+      list_key: channels
+      item_key: channel_id
+      toggle_field: enabled
+      not_found_error: channel_not_found
+  command_type: invoke_extension_action
+  mutates_platform: true
+  parameters:
+  - name: channel_id
+    type: string
+    required: false
+  result_fields:
+  - message
+  - values.channels
+  error_codes:
+  - project_context_required
+  - channel_not_found
+  - project_connection_storage_unavailable
+- action_id: delete_channel
+  workflow_visible: false
+  title: Delete Channel
+  description: Delete a Telegram channel from the project binding.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: platform
+    operation: project_connection_list_delete
+    config:
+      connection_type_id: telegram_bot
+      list_key: channels
+      item_key: channel_id
+      not_found_error: channel_not_found
+  command_type: invoke_extension_action
+  mutates_platform: true
+  parameters:
+  - name: channel_id
+    type: string
+    required: false
+  result_fields:
+  - message
+  - values.channels
+  error_codes:
+  - project_context_required
+  - channel_not_found
+  - project_connection_storage_unavailable
+- action_id: toggle_route
+  workflow_visible: false
+  title: Toggle Route
+  description: Enable or disable a notification route.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: extension
+    config:
+      runtime_resources:
+        notification_routes: true
+      host_mutations:
+      - notification_routes_save
+  command_type: invoke_extension_action
+  mutates_platform: true
+  result_fields:
+  - message
+  error_codes:
+  - project_context_required
+  - notification_route_storage_unavailable
+  - toggle_route_requires_target_item_ids
+  - no_matching_routes_found
+- action_id: configure_webhook
+  workflow_visible: false
+  title: Configure Webhook
+  description: Register the generic Flow Steward callback URL with Telegram Bot API.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: extension
+    config:
+      runtime_resources:
+        project_connection: true
+        provider_key: flowsteward.telegram
+        provider_secrets:
+        - bot_token
+      host_mutations:
+      - project_connection_upsert
+  result_fields:
+  - result.url_configured
+  - result.fake_mode
+  command_type: invoke_extension_action
+  mutates_platform: true
+  error_codes:
+  - callback_url_required
+  - bot_token_required
+  - telegram_set_webhook_failed
+- action_id: get_webhook_status
+  workflow_visible: false
+  title: Get Webhook Status
+  description: Fetch Telegram webhook status from getWebhookInfo.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: extension
+    config:
+      runtime_resources:
+        project_connection: true
+        provider_key: flowsteward.telegram
+        provider_secrets:
+        - bot_token
+      host_mutations:
+      - project_connection_upsert
+  result_fields:
+  - result.url_configured
+  - result.pending_update_count
+  command_type: invoke_extension_action
+  mutates_platform: true
+  error_codes:
+  - bot_token_required
+  - telegram_get_webhook_info_failed
+- action_id: poll_now
+  workflow_visible: false
+  title: Poll Now
+  description: Run one polling pass against Telegram getUpdates and emit canonical inbound events.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: extension
+    config:
+      runtime_resources:
+        project_connection: true
+        provider_key: flowsteward.telegram
+        provider_secrets:
+        - bot_token
+      host_mutations:
+      - project_connection_upsert
+  contract:
+    serialization:
+      resource: inbound_updates
+    background:
+      kind: connection_poll
+      interval_field: polling_interval_seconds
+      mode_field: inbound_mode
+      transport_policy: webhook_preferred
+  command_type: invoke_extension_action
+  mutates_platform: true
+  result_fields:
+  - message
+  - result.processed_updates
+  - result.last_update_id
+  - result.active_transport
+  error_codes:
+  - project_context_required
+  - bot_token_required
+  - polling_unavailable
+  - polling_busy
+  - operation_serialization_unavailable
+  - operation_serialization_busy
+  - webhook_unavailable
+- action_id: ingress_event
+  workflow_visible: false
+  title: Ingress Event
+  description: Normalize inbound Telegram webhook payloads to canonical interaction
+    events.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: extension
+    config:
+      runtime_resources:
+        project_connection: true
+        callback_registrations: true
+        provider_secrets:
+        - bot_token
+      host_mutations:
+      - project_connection_upsert
+  result_fields:
+  - result.provider
+  - result.ingress_type
+  - result.job_id
+  - result.project_id
+  mutates_platform: false
+  error_codes:
+  - invalid_payload
+  - unauthorized_telegram_ingress
+  - unauthorized_human_decision_channel
+  - cross_project_human_decision
+  - invalid_reject_comment_context

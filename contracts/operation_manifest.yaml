@@ -1,0 +1,13 @@
+operations:
+  - operation_id: deliver_notification
+    display_name: Deliver Notification
+    description: Internal notification-provider delivery contract.
+    operation_kind: action
+    category: notification
+    workflow_visible: false
+    inputs:
+      - {name: event, value_type: object, required: true}
+      - {name: route, value_type: object, required: true}
+    outputs:
+      - {name: delivered, value_type: boolean}
+      - {name: provider_message_id, value_type: text}

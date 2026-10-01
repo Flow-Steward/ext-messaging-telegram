@@ -1,0 +1,54 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+title: Telegram Notification Subscriptions
+description: Defines how notification routes are configured for this provider. Each
+  route maps event patterns to a delivery target.
+type: object
+properties:
+  routes:
+    type: array
+    description: Notification routes bound to this provider.
+    items:
+      type: object
+      properties:
+        route_key:
+          type: string
+          description: Unique key for this route within the project.
+          examples:
+          - telegram_job_failed_default
+        event_type:
+          type: string
+          description: Event type pattern to match. Supports fnmatch wildcards (*,
+            ?).
+          examples:
+          - job.failed
+          - job.*
+          - approval.requested
+        severity:
+          type: string
+          description: Minimum severity threshold for delivery.
+          enum:
+          - any
+          - debug
+          - info
+          - warning
+          - error
+          - critical
+          default: any
+        channel_id:
+          type: string
+          description: Named Telegram channel to target for this route.
+        message_suffix:
+          type: string
+          description: Optional suffix appended to messages on this route.
+          default: ''
+        enabled:
+          type: boolean
+          default: true
+      required:
+      - route_key
+      - event_type
+      - channel_id
+      additionalProperties: false
+required:
+- routes
+additionalProperties: false

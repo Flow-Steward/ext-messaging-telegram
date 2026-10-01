@@ -1,0 +1,114 @@
+manifest_version: 2
+lifecycle: {data_schema_version: 1, data_migrations: []}
+extension_id: flowsteward.telegram
+kind: notification_provider
+version: 1.0.0
+display_name: Telegram Notifications
+description: Sends Flow Steward notifications to Telegram chats via the Bot API. Canonical
+  reference integration for notification providers.
+vendor:
+  name: Flow Steward
+  support_url: https://github.com/Flow-Steward/ext-messaging-telegram/issues
+  website_url: https://github.com/Flow-Steward/ext-messaging-telegram
+listing:
+  category: messaging
+  tags:
+  - telegram
+  - notifications
+  - chatops
+  summary: Send notifications and approval interactions through Telegram chats.
+features:
+- notify
+- action
+- ingress_event
+event_subscriptions:
+- {event_type: job.failed, severity: any, conditions: {}}
+- {event_type: job.completed, severity: any, conditions: {}}
+- {event_type: job.awaiting_approval, severity: any, conditions: {}}
+- {event_type: approval.requested, severity: any, conditions: {}}
+- {event_type: approval.resolved, severity: any, conditions: {}}
+- {event_type: notification.delivery.failed, severity: any, conditions: {}}
+- {event_type: notification.interaction_received, severity: any, conditions: {}}
+- {event_type: external.comment.received, severity: any, conditions: {}}
+required_scopes:
+- event:subscribe
+- notify:dispatch
+- extension:invoke
+- read:events
+schemas:
+  config: schemas/config.schema.yaml
+  secrets: schemas/secrets.schema.yaml
+  subscriptions: schemas/subscriptions.schema.yaml
+  input:
+    type: object
+    properties:
+      action:
+        type: string
+      event:
+        type: object
+      route:
+        type: object
+      request:
+        type: object
+    required:
+    - action
+  output:
+    type: object
+    properties:
+      ok:
+        type: boolean
+      delivered:
+        type: boolean
+      provider_message_id:
+        type: string
+    required:
+    - ok
+    - delivered
+machine_auth:
+  service_account_key: svc_ext_telegram
+  required_scopes:
+  - event:subscribe
+  - notify:dispatch
+account_scope:
+  scope_type: project
+  description: Telegram binding is per-project; each project configures provider
+    defaults, bot token, and named channels.
+external_effects:
+- operation_id: deliver_notification
+  effect_kind: message_delivery
+  channel: telegram
+  idempotency: required
+  test_mode_behavior: suppress
+  observability:
+    target_fields:
+    - channel_id
+    target_kind: channel
+    target_label: Telegram channel
+callbacks:
+- callback_id: updates
+  purpose: inbound_events
+  methods:
+  - POST
+  action_id: ingress_event
+  connection_scoped: true
+  auth:
+    type: shared_secret_header
+    header: X-Telegram-Bot-Api-Secret-Token
+runtime:
+  extension_contract_v2:
+    connection_types: contracts/connection_types.yaml
+    operation_manifest: contracts/operation_manifest.yaml
+    step_ui_manifest: contracts/step_ui_manifest.yaml
+entrypoint:
+  mode: subprocess
+  command:
+  - python3
+  - main.py
+health:
+  command:
+  - python3
+  - health.py
+  timeout_seconds: 5
+ui_manifest: ui/ui_manifest.yaml
+query_manifest: ui/queries/queries.yaml
+action_manifest: ui/actions/actions.yaml

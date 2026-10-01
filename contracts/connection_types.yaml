@@ -1,0 +1,51 @@
+connection_types:
+  - connection_type_id: telegram_bot
+    display_name: Telegram bot
+    description: A project-scoped Telegram bot with named notification and human-decision channels.
+    auth:
+      type: static_secret
+    config_schema:
+      type: object
+      additionalProperties: false
+      properties:
+        disable_web_page_preview: {type: boolean, default: true}
+        message_prefix: {type: string, maxLength: 4096, default: ''}
+        channels:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required: [channel_id, display_name, chat_id, enabled, capabilities]
+            properties:
+              channel_id: {type: string, minLength: 1, maxLength: 190}
+              display_name: {type: string, minLength: 1, maxLength: 512}
+              chat_id: {type: string, minLength: 1, maxLength: 190}
+              enabled: {type: boolean}
+              capabilities:
+                type: object
+                additionalProperties: false
+                required: [notify, human_decision]
+                properties:
+                  notify: {type: boolean}
+                  human_decision: {type: boolean}
+    ingress_schema:
+      type: object
+      additionalProperties: true
+      properties:
+        inbound_mode:
+          type: string
+          enum: [auto, webhook, polling]
+        polling_interval_seconds:
+          type: integer
+          enum: [15, 30, 60, 120, 300]
+    secret_schema:
+      type: object
+      additionalProperties: false
+      required: [bot_token]
+      properties:
+        bot_token: {type: string, minLength: 1, maxLength: 4096}
+    capabilities:
+      notifications: true
+      human_decisions: true
+      webhook_ingress: true
+      polling_ingress: true

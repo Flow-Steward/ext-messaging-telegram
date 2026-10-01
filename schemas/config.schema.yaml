@@ -1,0 +1,16 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+title: Telegram Notification Provider Configuration
+description: Non-secret configuration for the Telegram notification provider binding.
+type: object
+properties:
+  disable_web_page_preview:
+    type: boolean
+    description: Disable link previews in messages.
+    default: true
+  message_prefix:
+    type: string
+    description: Optional prefix prepended to all messages from this binding.
+    maxLength: 4096
+    default: ''
+required: []
+additionalProperties: false

@@ -1,0 +1,8 @@
+page_id: setup
+title: Setup
+description: Create the bot with @BotFather, save its token, then set optional message defaults.
+components:
+  - ref: ../components/secrets_form.yaml
+  - ref: ../components/quick_start.yaml
+  - ref: ../components/config_form.yaml
+  - ref: ../components/setup_guide.yaml

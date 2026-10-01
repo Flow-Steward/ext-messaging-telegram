@@ -1,0 +1,4 @@
+component_id: delivery_stats
+type: stats_row
+title: Delivery summary
+query_id: delivery_summary

@@ -1,0 +1,36 @@
+component_id: config_form
+type: form
+title: Message defaults
+description: Optional. How messages are formatted; the bot works without changing these.
+schema_ref: ../../schemas/config.schema.yaml
+ui_schema:
+  version: '1'
+  type: form_ui
+  layout:
+    columns: 1
+  sections:
+  - section_id: general
+    title: Message defaults
+    variant: card
+    field_ids:
+    - disable_web_page_preview
+    - message_prefix
+  fields:
+  - field_id: disable_web_page_preview
+    path: disable_web_page_preview
+    widget: boolean
+    section_id: general
+    label: Disable Link Previews
+  - field_id: message_prefix
+    path: message_prefix
+    widget: text
+    section_id: general
+    label: Message Prefix
+    placeholder: '[Flow Steward]'
+    help: Optional prefix prepended to all messages.
+  actions:
+    save_label: Save defaults
+data:
+  load_query: get_config
+  save_action: save_config
+  save_mode: patch

@@ -1,0 +1,43 @@
+component_id: discovered_chats_grid
+type: grid
+title: Discovered Chats
+query_id: list_discovered_chats
+columns:
+- key: title
+  label: Title
+  type: text
+- key: username
+  label: Username
+  type: text
+- key: chat_id
+  label: Chat ID
+  type: text
+  monospace: true
+- key: type
+  label: Type
+  type: badge
+  badge_map:
+    private: blue
+    group: amber
+    supergroup: green
+    channel: cyan
+    unknown: gray
+- key: source
+  label: Source
+  type: text
+- key: existing_channel_id
+  label: Saved Channel
+  type: text
+- key: last_seen_at
+  label: Last Seen
+  type: datetime
+row_actions:
+- action_id: save_discovered_chat
+  label: Save as Channel
+  scope: row
+  visible_if:
+  - path: already_saved
+    eq: false
+empty_state:
+  title: No discovered chats yet
+  description: Resolve a public chat or add the bot to a target chat and refresh discovery.

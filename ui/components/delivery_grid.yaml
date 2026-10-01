@@ -1,0 +1,53 @@
+component_id: delivery_grid
+anchor_id: delivery_grid
+type: grid
+title: Delivery History
+query_id: list_deliveries
+query_params:
+  page_size: 20
+columns:
+- key: workflow_label
+  label: Workflow
+  type: text
+- key: event_label
+  label: Event
+  type: text
+- key: severity
+  label: Severity
+  type: badge
+  badge_map:
+    debug: gray
+    info: blue
+    warning: amber
+    error: red
+    critical: red
+- key: status
+  label: Status
+  type: badge
+  badge_map:
+    delivered: green
+    failed: red
+    skipped: gray
+    pending: amber
+- key: delivered_at
+  label: Delivered At
+  type: datetime
+- key: provider_message_id
+  label: Message ID
+  type: text
+  monospace: true
+- key: error_text
+  label: Error
+  type: text
+row_actions:
+- action_id: retry_delivery
+  label: Retry
+  scope: row
+  visible_if:
+  - path: status
+    in:
+    - failed
+    - skipped
+empty_state:
+  title: No deliveries yet
+  description: Deliveries will appear here once notifications are dispatched.

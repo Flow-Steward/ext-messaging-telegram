@@ -1,0 +1,38 @@
+component_id: inbound_status_grid
+type: grid
+title: Active transport and last sync
+query_id: get_inbound_status
+columns:
+- key: inbound_mode
+  label: Inbound Mode
+  type: text
+- key: active_transport
+  label: Active Transport
+  type: badge
+  badge_map:
+    webhook: green
+    polling: amber
+    webhook_unavailable: red
+    unknown: gray
+- key: webhook_status
+  label: Webhook Status
+  type: text
+- key: polling_status
+  label: Polling Status
+  type: text
+- key: pending_update_count
+  label: Pending Updates
+  type: text
+- key: last_update_id
+  label: Last Update ID
+  type: text
+  monospace: true
+- key: last_inbound_sync_at
+  label: Last Sync
+  type: datetime
+- key: last_inbound_error
+  label: Last Error
+  type: text
+empty_state:
+  title: No inbound state yet
+  description: Configure webhook or run polling to populate inbound status.

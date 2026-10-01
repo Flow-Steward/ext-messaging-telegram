@@ -1,0 +1,6 @@
+page_id: deliveries
+title: Deliveries
+description: Delivery summary and history, with retry for failed or skipped rows.
+components:
+  - ref: ../components/recent_stats.yaml
+  - ref: ../components/delivery_grid.yaml

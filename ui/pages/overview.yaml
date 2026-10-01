@@ -1,0 +1,6 @@
+page_id: overview
+title: Overview
+description: Is Telegram ready for this project? Read-only; each incomplete item points at the page that fixes it.
+components:
+  - ref: ../components/health_status.yaml
+  - ref: ../components/overview.yaml

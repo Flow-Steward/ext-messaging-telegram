@@ -1,0 +1,4 @@
+component_id: health_panel
+type: health_panel
+title: Readiness
+query_id: provider_health

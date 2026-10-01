@@ -1,0 +1,7 @@
+component_id: chats_intro
+type: markdown
+title: Chats and channels
+content: |
+  **Discovery** finds Telegram chats currently visible to the saved bot: public chats by username, private chats and groups through updates the bot has received.
+
+  A **Channel** saves one chat as a stable, named Flow Steward destination. A channel can advertise notification and human-decision capabilities independently. A test notification needs a saved token and an enabled channel.

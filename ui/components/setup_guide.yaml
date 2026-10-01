@@ -1,0 +1,24 @@
+component_id: setup_guide
+type: markdown
+title: Detailed guide
+collapsible: true
+content: |
+  ## Public chat resolution
+
+  A public chat or channel has a username. Paste `@name` or `https://t.me/name` on Chats & Channels and use **Resolve**: the bot asks Telegram for the chat directly, no message required.
+
+  ## Private and group discovery
+
+  Private chats, groups and private channels have no public username. Add the bot to the chat, send any message there, then use **Discover via Telegram** or **Refresh Discovered Chats**. Discovery reads pending updates through the configured inbound transport (polling or webhook), so it only sees chats that produced an update after the bot joined.
+
+  ## Channel permissions
+
+  To post into a channel the bot must be an administrator with permission to post messages. In groups it needs to be a member; to read replies in groups it must also be allowed to see messages (privacy mode off, or addressed directly). A saved channel advertises `notify` and `human_decision` capabilities independently.
+
+  ## Polling versus webhook
+
+  Polling asks Telegram for updates on an interval and needs no public address; it is the convenient choice for local and private setups. Webhook makes Telegram push updates to a public HTTPS callback URL and is the better choice for production. Both are optional: outbound notifications work with neither.
+
+  ## Token revocation
+
+  The token is the bot's password. Revoke it in @BotFather with `/revoke` if it may have leaked, then paste the new token into the Bot Token card and save. Saving a new token keeps channels, routes and inbound settings; an empty token field never overwrites the stored token.

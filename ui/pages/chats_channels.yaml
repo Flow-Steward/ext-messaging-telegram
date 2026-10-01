@@ -1,0 +1,9 @@
+page_id: chats_channels
+title: Chats & Channels
+description: Find the chats the bot can see and save them as named Flow Steward destinations.
+components:
+  - ref: ../components/chats_intro.yaml
+  - ref: ../components/chat_discovery_form.yaml
+  - ref: ../components/discovered_chats_grid.yaml
+  - ref: ../components/channels_form.yaml
+  - ref: ../components/channel_test_grid.yaml

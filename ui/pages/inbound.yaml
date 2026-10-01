@@ -1,0 +1,8 @@
+page_id: inbound
+title: Inbound
+description: Optional. Needed only for Telegram replies, callback buttons and approve/reject/abort decisions.
+components:
+  - ref: ../components/inbound_intro.yaml
+  - ref: ../components/inbound_mode_form.yaml
+  - ref: ../components/webhook_setup.yaml
+  - ref: ../components/inbound_status_grid.yaml

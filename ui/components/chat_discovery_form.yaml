@@ -1,0 +1,32 @@
+component_id: chat_discovery_form
+type: form
+title: Chat Discovery
+ui_schema:
+  version: '1'
+  type: form_ui
+  layout:
+    columns: 1
+  sections:
+  - section_id: discovery
+    title: Chat Discovery
+    variant: card
+    field_ids:
+    - chat_link
+  fields:
+  - field_id: chat_link
+    path: chat_link
+    widget: text
+    section_id: discovery
+    label: Chat Link or @Username
+    placeholder: '@ops_alerts or https://t.me/ops_alerts'
+    help: Public chats can resolve directly. Private invite links use guided discovery via webhook or polling.
+  actions:
+    resolve:
+      action_id: resolve_chat
+      label: Resolve
+    discover:
+      action_id: discover_chat
+      label: Discover via Telegram
+    refresh:
+      action_id: refresh_discovered_chats
+      label: Refresh Discovered Chats

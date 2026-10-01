@@ -1,0 +1,56 @@
+component_id: inbound_mode_form
+anchor_id: inbound_mode_form
+type: form
+title: Inbound Mode
+ui_schema:
+  version: '1'
+  type: form_ui
+  layout:
+    columns: 1
+  sections:
+  - section_id: inbound
+    title: Inbound Mode
+    variant: card
+    field_ids:
+    - inbound_mode
+    - polling_interval_seconds
+  fields:
+  - field_id: inbound_mode
+    path: inbound_mode
+    widget: select
+    section_id: inbound
+    label: Inbound Mode
+    help: Auto prefers webhook when it is configured and healthy, otherwise it falls back to polling.
+    props:
+      options:
+      - label: Auto
+        value: auto
+      - label: Webhook
+        value: webhook
+      - label: Polling
+        value: polling
+  - field_id: polling_interval_seconds
+    path: polling_interval_seconds
+    widget: select
+    section_id: inbound
+    label: Polling Interval
+    props:
+      options:
+      - label: 15 seconds
+        value: '15'
+      - label: 30 seconds
+        value: '30'
+      - label: 60 seconds
+        value: '60'
+      - label: 120 seconds
+        value: '120'
+      - label: 300 seconds
+        value: '300'
+  actions:
+    save_label: Save Inbound Settings
+    poll_now:
+      action_id: poll_now
+      label: Poll Now
+data:
+  load_query: get_inbound_status
+  save_action: save_inbound_settings

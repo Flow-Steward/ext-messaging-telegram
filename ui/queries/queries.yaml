@@ -1,0 +1,156 @@
+queries:
+- query_id: provider_health
+  title: Provider Health
+  description: Check Telegram Bot API connectivity and token validity.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: extension
+    config:
+      runtime_resources:
+        project_connection: true
+        provider_key: flowsteward.telegram
+        provider_secrets:
+        - bot_token
+  result_fields:
+  - summary.provider
+  - summary.project_id
+  - summary.status
+  - checks
+  - summary.readiness
+  - summary.bot_username
+  error_codes:
+  - project_context_required
+- query_id: delivery_summary
+  title: Delivery Summary
+  description: Aggregate delivery statistics (total, delivered, failed).
+  required_scopes:
+  - read:events
+  handler:
+    mode: extension
+    config:
+      runtime_resources:
+        notification_deliveries: true
+  result_fields:
+  - items
+  - summary.provider
+  - summary.total
+  error_codes:
+  - project_context_required
+- query_id: list_deliveries
+  title: List Deliveries
+  description: Paginated delivery history for this provider.
+  required_scopes:
+  - read:events
+  handler:
+    mode: extension
+    config:
+      runtime_resources:
+        notification_deliveries: true
+  result_fields:
+  - items
+  - total
+  - summary.project_id
+  error_codes:
+  - project_context_required
+- query_id: list_routes
+  title: List Routes
+  description: Notification routes configured for this provider.
+  required_scopes:
+  - read:events
+  handler:
+    mode: extension
+    config:
+      runtime_resources:
+        notification_routes: true
+  result_fields:
+  - items
+  - summary.provider
+  - summary.project_id
+  error_codes:
+  - project_context_required
+- query_id: get_config
+  title: Get Configuration
+  description: Load persisted non-secret Telegram provider configuration for the selected
+    project.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: extension
+    config:
+      runtime_resources:
+        project_connection: true
+  result_fields:
+  - values.disable_web_page_preview
+  - values.message_prefix
+  - summary.project_id
+  error_codes:
+  - project_context_required
+- query_id: get_secrets
+  title: Get Secrets
+  description: Load persisted secret metadata/values for the selected project.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: extension
+    config:
+      runtime_resources:
+        project_connection: true
+        provider_key: flowsteward.telegram
+        provider_secrets:
+        - bot_token
+  result_fields:
+  - values.bot_token
+  - summary.project_id
+  - summary.bot_token_configured
+  error_codes:
+  - project_context_required
+- query_id: list_channels
+  title: List Channels
+  description: Load project-scoped Telegram channels for the selected project.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: extension
+    config:
+      runtime_resources:
+        project_connection: true
+  result_fields:
+  - values.channels
+  - items
+  - summary.project_id
+  error_codes:
+  - project_context_required
+- query_id: get_inbound_status
+  title: Get Inbound Status
+  description: Load inbound mode, active transport, and last sync state for this Telegram binding.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: extension
+    config:
+      runtime_resources:
+        project_connection: true
+  result_fields:
+  - values.inbound_mode
+  - values.polling_interval_seconds
+  - items
+  - summary.active_transport
+  error_codes:
+  - project_context_required
+- query_id: list_discovered_chats
+  title: List Discovered Chats
+  description: Load discovered Telegram chats available to save as named channels.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: extension
+    config:
+      runtime_resources:
+        project_connection: true
+  result_fields:
+  - values.discovered_chats
+  - items
+  - summary.project_id
+  error_codes:
+  - project_context_required

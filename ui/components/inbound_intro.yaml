@@ -1,0 +1,7 @@
+component_id: inbound_intro
+type: markdown
+title: Inbound is optional
+content: |
+  Inbound is optional: outbound notifications do not need it. Configure it only for Telegram replies, callback buttons, and human-in-the-loop approve/reject flows.
+
+  **Polling** is convenient for local setups and needs no public address. **Webhook** requires a public HTTPS callback URL and receives updates as they happen. **Auto** prefers a healthy webhook and falls back to polling. An unconfigured inbound path is not an error.

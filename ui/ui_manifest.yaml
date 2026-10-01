@@ -1,0 +1,7 @@
+version: '1'
+pages:
+  - ref: pages/overview.yaml
+  - ref: pages/setup.yaml
+  - ref: pages/chats_channels.yaml
+  - ref: pages/inbound.yaml
+  - ref: pages/deliveries.yaml
