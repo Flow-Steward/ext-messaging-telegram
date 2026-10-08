@@ -1,0 +1,184 @@
+ext.display_name: Telegram pranešimai
+ext.description: Siunčia Flow Steward pranešimus į Telegram pokalbius per Bot API.
+ext.account_scope_description: Telegram susiejimas nustatomas kiekvienam projektui atskirai — boto raktas, numatytieji nustatymai ir kanalai.
+category.notification.display_name: Pranešimai
+connection.telegram_bot.display_name: Telegram botas
+connection.telegram_bot.description: Projekto Telegram botas su pavadintais pranešimų ir sprendimų kanalais.
+op.deliver_notification.display_name: Pristatyti pranešimą
+op.deliver_notification.description: Vidinė pranešimų tiekėjo pristatymo sutartis.
+op.deliver_notification.input.event.display_name: Įvykis
+op.deliver_notification.input.event.description: Pranešimo įvykis, kurį reikia pristatyti.
+op.deliver_notification.input.route.display_name: Maršrutas
+op.deliver_notification.input.route.description: Kur siunčiamas pranešimas.
+op.deliver_notification.output.delivered.display_name: Pristatyta
+op.deliver_notification.output.delivered.description: Ar Telegram priėmė žinutę.
+op.deliver_notification.output.provider_message_id.display_name: Telegram žinutės ID
+op.deliver_notification.output.provider_message_id.description: Žinutės ID, kurį grąžino Telegram.
+page.overview.title: Apžvalga
+page.overview.description: Ar Telegram paruoštas šiam projektui? Tik peržiūra; kiekvienas nebaigtas punktas nurodo puslapį, kuriame jį sutvarkyti.
+component.health_panel.title: Parengtis
+component.telegram_overview.title: Apie
+component.telegram_overview.content: 'Siunčia projekto įvykius į Telegram pokalbius per Bot API: užduočių klaidas ir užbaigimus, patvirtinimo užklausas ir sprendimus. Kiekvienas projektas susieja savo boto raktą ir pavadintus kanalus; atsakymai ir patvirtinimo, atmetimo ar nutraukimo sprendimai grįžta per neprivalomą gaunamų žinučių kelią.
+
+
+  Pradėkite nuo **Nustatymų**, tada **Pokalbiai ir kanalai**. **Gaunami** reikalingi tik dvipusiams srautams.'
+page.setup.title: Nustatymai
+page.setup.description: Sukurkite botą su @BotFather, išsaugokite jo raktą ir, jei reikia, nustatykite žinučių numatytąsias reikšmes.
+component.secrets_form.title: Boto raktas
+component.secrets_form.description: Privaloma. Raktas autentifikuoja botą, ne jūsų Telegram paskyrą. Jis saugomas kaip slaptažodis, šifruojamas ir po išsaugojimo niekada nerodomas.
+component.secrets_form.field.bot_token.label: Boto raktas
+component.secrets_form.field.bot_token.help: Bot API raktas iš @BotFather. Jis autentifikuoja botą, saugomas šifruotas ir po išsaugojimo nerodomas. Palikite lauką tuščią, kad liktų išsaugotas raktas; įveskite naują, kad jį pakeistumėte.
+component.secrets_form.field.bot_token.placeholder: 123456:ABC-DEF1234...
+component.secrets_form.section.secrets.title: Boto raktas
+component.secrets_form.save_label: Išsaugoti raktą
+component.secrets_form.action.verify.label: Patikrinti
+component.quick_start.title: Greita pradžia
+component.quick_start.content: '1. Telegram programėlėje atidarykite patvirtintą [@BotFather](https://t.me/BotFather) paskyrą.
+
+  2. Paleiskite `/newbot` ir pagal Telegram nurodymus pavadinkite botą.
+
+  3. Nukopijuokite sugeneruotą Bot API raktą į **Boto raktas** kortelę žemiau.
+
+  4. Išsaugokite raktą ir mygtuku **Patikrinti** patvirtinkite aptiktą boto vardą.
+
+  5. Pridėkite botą į tikslinį pokalbį ar kanalą. Privačiuose pokalbiuose ir grupėse parašykite ten žinutę, kad paieška turėtų ką perskaityti.
+
+  6. Pereikite į **Pokalbiai ir kanalai** ir išsaugokite rastą pokalbį kaip pavadintą Flow Steward paskirties vietą.
+
+  7. **Gaunamus** konfigūruokite tik tada, kai reikia atsakymų arba žmogaus sprendimų (patvirtinti, atmesti, nutraukti).
+
+
+  Oficialus Telegram vadovas: [Bot tutorial](https://core.telegram.org/bots/tutorial).'
+component.config_form.title: Numatytieji žinučių nustatymai
+component.config_form.description: Neprivaloma. Kaip formatuojamos žinutės; botas veikia ir nekeičiant šių nustatymų.
+component.config_form.field.disable_web_page_preview.label: Išjungti nuorodų peržiūras
+component.config_form.field.message_prefix.label: Žinutės priešdėlis
+component.config_form.field.message_prefix.help: Neprivalomas priešdėlis, pridedamas prie visų žinučių.
+component.config_form.field.message_prefix.placeholder: '[Flow Steward]'
+component.config_form.section.general.title: Numatytieji žinučių nustatymai
+component.config_form.save_label: Išsaugoti numatytuosius
+component.setup_guide.title: Išsamus vadovas
+component.setup_guide.content: '## Viešų pokalbių nustatymas
+
+
+  Viešas pokalbis ar kanalas turi vartotojo vardą. Įklijuokite `@vardas` arba `https://t.me/vardas` puslapyje „Pokalbiai ir kanalai“ ir spauskite **Nustatyti**: botas tiesiogiai paklaus Telegram apie pokalbį, žinutės nereikia.
+
+
+  ## Privačių pokalbių ir grupių paieška
+
+
+  Privatūs pokalbiai, grupės ir privatūs kanalai neturi viešo vardo. Pridėkite botą į pokalbį, parašykite ten bet kokią žinutę ir spauskite **Rasti per Telegram** arba **Atnaujinti rastus pokalbius**. Paieška skaito laukiančius atnaujinimus per sukonfigūruotą gaunamų žinučių kelią (polling arba webhook), todėl mato tik tuos pokalbius, kuriuose po boto prisijungimo buvo atnaujinimų.
+
+
+  ## Kanalo teisės
+
+
+  Kad galėtų skelbti kanale, botas turi būti administratorius su teise skelbti žinutes. Grupėse jis turi būti narys; kad skaitytų atsakymus grupėse, jam taip pat turi būti leista matyti žinutes (išjungtas privatumo režimas arba kreipiamasi tiesiogiai). Išsaugotas kanalas atskirai skelbia `notify` ir `human_decision` galimybes.
+
+
+  ## Polling ar webhook
+
+
+  Polling klausia Telegram atnaujinimų tam tikru intervalu ir nereikalauja viešo adreso; tai patogu vietinėms ir privačioms instaliacijoms. Webhook leidžia Telegram siųsti atnaujinimus į viešą HTTPS grįžtamojo ryšio adresą ir labiau tinka gamybai. Abu neprivalomi: išsiunčiami pranešimai veikia ir be jų.
+
+
+  ## Rakto atšaukimas
+
+
+  Raktas yra boto slaptažodis. Jei jis galėjo nutekėti, atšaukite jį @BotFather komanda `/revoke`, tada įklijuokite naują raktą į Boto rakto kortelę ir išsaugokite. Išsaugant naują raktą kanalai, maršrutai ir gaunamų žinučių nustatymai išlieka; tuščias rakto laukas niekada neperrašo išsaugoto rakto.'
+page.chats_channels.title: Pokalbiai ir kanalai
+page.chats_channels.description: Raskite pokalbius, kuriuos mato botas, ir išsaugokite juos kaip pavadintas Flow Steward paskirties vietas.
+component.chats_intro.title: Pokalbiai ir kanalai
+component.chats_intro.content: '**Paieška** randa Telegram pokalbius, kuriuos šiuo metu mato išsaugotas botas: viešus pokalbius pagal vardą, privačius pokalbius ir grupes pagal boto gautus atnaujinimus.
+
+
+  **Kanalas** išsaugo vieną pokalbį kaip pastovią, pavadintą Flow Steward paskirties vietą. Kanalas gali atskirai skelbti pranešimų ir žmogaus sprendimų galimybes. Bandomajam pranešimui reikia išsaugoto rakto ir įjungto kanalo.'
+component.chat_discovery_form.title: Pokalbių paieška
+component.chat_discovery_form.field.chat_link.label: Pokalbio nuoroda arba @vardas
+component.chat_discovery_form.field.chat_link.help: Viešus pokalbius galima nustatyti tiesiogiai. Privačios kvietimo nuorodos naudoja paiešką per webhook arba polling.
+component.chat_discovery_form.field.chat_link.placeholder: '@ops_alerts arba https://t.me/ops_alerts'
+component.chat_discovery_form.section.discovery.title: Pokalbių paieška
+component.chat_discovery_form.action.resolve.label: Nustatyti
+component.chat_discovery_form.action.discover.label: Rasti per Telegram
+component.chat_discovery_form.action.refresh.label: Atnaujinti rastus pokalbius
+component.discovered_chats_grid.title: Rasti pokalbiai
+component.discovered_chats_grid.column.title.label: Pavadinimas
+component.discovered_chats_grid.column.username.label: Vartotojo vardas
+component.discovered_chats_grid.column.chat_id.label: Pokalbio ID
+component.discovered_chats_grid.column.type.label: Tipas
+component.discovered_chats_grid.column.source.label: Šaltinis
+component.discovered_chats_grid.column.existing_channel_id.label: Išsaugotas kanalas
+component.discovered_chats_grid.column.last_seen_at.label: Paskutinį kartą matytas
+component.discovered_chats_grid.row_action.save_discovered_chat.label: Išsaugoti kaip kanalą
+component.discovered_chats_grid.empty_state: Rastų pokalbių dar nėra
+component.discovered_chats_grid.empty_state_description: Nustatykite viešą pokalbį arba pridėkite botą į tikslinį pokalbį ir atnaujinkite paiešką.
+component.channels_form.title: Kanalai
+component.channels_form.field.channels.label: Telegram kanalai
+component.channels_form.field.channels.help: Pridėkite pavadintus projekto kanalus pranešimams ir žmogaus sprendimams.
+component.channels_form.field.channels.field.channel_id.label: Kanalo ID
+component.channels_form.field.channels.field.channel_id.placeholder: ops_alerts
+component.channels_form.field.channels.field.display_name.label: Rodomas pavadinimas
+component.channels_form.field.channels.field.display_name.placeholder: Ops Alerts
+component.channels_form.field.channels.field.chat_id.label: Pokalbio ID
+component.channels_form.field.channels.field.chat_id.placeholder: '-1001234567890'
+component.channels_form.field.channels.field.enabled.label: Įjungtas
+component.channels_form.field.channels.field.capabilities.notify.label: Pranešimų galimybė
+component.channels_form.field.channels.field.capabilities.human_decision.label: Žmogaus sprendimų galimybė
+component.channels_form.section.channels.title: Kanalai
+component.channels_form.save_label: Išsaugoti kanalus
+component.channel_test_grid.title: Išbandyti kanalą
+component.channel_test_grid.column.display_name.label: Kanalas
+component.channel_test_grid.column.channel_id.label: Kanalo ID
+component.channel_test_grid.column.enabled.label: Įjungtas
+component.channel_test_grid.column.capabilities.notify.label: Pranešimai
+component.channel_test_grid.row_action.test_delivery.label: Siųsti bandomąjį
+component.channel_test_grid.empty_state: Nėra kanalų bandymui
+component.channel_test_grid.empty_state_description: Prieš siųsdami bandomąjį pranešimą, išsaugokite ir įjunkite kanalą su pranešimų galimybe.
+page.inbound.title: Gaunami
+page.inbound.description: Neprivaloma. Reikalinga tik Telegram atsakymams, mygtukams ir patvirtinimo, atmetimo ar nutraukimo sprendimams.
+component.inbound_intro.title: Gaunamos žinutės neprivalomos
+component.inbound_intro.content: 'Gaunamos žinutės neprivalomos: išsiunčiamiems pranešimams jų nereikia. Konfigūruokite tik Telegram atsakymams, mygtukams ir žmogaus patvirtinimo ar atmetimo srautams.
+
+
+  **Polling** patogus vietinėms instaliacijoms ir nereikalauja viešo adreso. **Webhook** reikalauja viešo HTTPS grįžtamojo ryšio adreso ir gauna atnaujinimus iš karto. **Auto** renkasi veikiantį webhook, o jam neveikiant naudoja polling. Nesukonfigūruotas gaunamų žinučių kelias nėra klaida.'
+component.inbound_mode_form.title: Gaunamų žinučių režimas
+component.inbound_mode_form.field.inbound_mode.label: Gaunamų žinučių režimas
+component.inbound_mode_form.field.inbound_mode.help: Auto renkasi webhook, kai jis sukonfigūruotas ir veikia, kitaip naudoja polling.
+component.inbound_mode_form.field.inbound_mode.option.auto.label: Auto
+component.inbound_mode_form.field.inbound_mode.option.webhook.label: Webhook
+component.inbound_mode_form.field.inbound_mode.option.polling.label: Polling
+component.inbound_mode_form.field.polling_interval_seconds.label: Polling intervalas
+component.inbound_mode_form.field.polling_interval_seconds.option.15.label: 15 sekundžių
+component.inbound_mode_form.field.polling_interval_seconds.option.30.label: 30 sekundžių
+component.inbound_mode_form.field.polling_interval_seconds.option.60.label: 60 sekundžių
+component.inbound_mode_form.field.polling_interval_seconds.option.120.label: 120 sekundžių
+component.inbound_mode_form.field.polling_interval_seconds.option.300.label: 300 sekundžių
+component.inbound_mode_form.section.inbound.title: Gaunamų žinučių režimas
+component.inbound_mode_form.save_label: Išsaugoti gaunamų nustatymus
+component.inbound_mode_form.action.poll_now.label: Tikrinti dabar
+component.telegram_webhook_setup.title: Webhook nustatymas
+component.inbound_status_grid.title: Aktyvus kelias ir paskutinis sinchronizavimas
+component.inbound_status_grid.column.inbound_mode.label: Gaunamų režimas
+component.inbound_status_grid.column.active_transport.label: Aktyvus kelias
+component.inbound_status_grid.column.webhook_status.label: Webhook būsena
+component.inbound_status_grid.column.polling_status.label: Polling būsena
+component.inbound_status_grid.column.pending_update_count.label: Laukiantys atnaujinimai
+component.inbound_status_grid.column.last_update_id.label: Paskutinio atnaujinimo ID
+component.inbound_status_grid.column.last_inbound_sync_at.label: Paskutinis sinchronizavimas
+component.inbound_status_grid.column.last_inbound_error.label: Paskutinė klaida
+component.inbound_status_grid.empty_state: Gaunamų žinučių būsenos dar nėra
+component.inbound_status_grid.empty_state_description: Sukonfigūruokite webhook arba paleiskite polling, kad būtų matoma būsena.
+page.deliveries.title: Pristatymai
+page.deliveries.description: Pristatymų suvestinė ir istorija; nepavykusius ar praleistus galima kartoti.
+component.delivery_stats.title: Pristatymų suvestinė
+component.delivery_grid.title: Pristatymų istorija
+component.delivery_grid.column.workflow_label.label: Darbo eiga
+component.delivery_grid.column.event_label.label: Įvykis
+component.delivery_grid.column.severity.label: Svarba
+component.delivery_grid.column.status.label: Būsena
+component.delivery_grid.column.delivered_at.label: Pristatyta
+component.delivery_grid.column.provider_message_id.label: Žinutės ID
+component.delivery_grid.column.error_text.label: Klaida
+component.delivery_grid.row_action.retry_delivery.label: Kartoti
+component.delivery_grid.empty_state: Pristatymų dar nėra
+component.delivery_grid.empty_state_description: Pristatymai atsiras čia, kai bus išsiųsti pranešimai.

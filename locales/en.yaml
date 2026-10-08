@@ -1,0 +1,184 @@
+ext.display_name: Telegram Notifications
+ext.description: Sends Flow Steward notifications to Telegram chats via the Bot API.
+ext.account_scope_description: Telegram binding is per-project; each project configures provider defaults, bot token, and named channels.
+category.notification.display_name: Notifications
+connection.telegram_bot.display_name: Telegram bot
+connection.telegram_bot.description: A project-scoped Telegram bot with named notification and human-decision channels.
+op.deliver_notification.display_name: Deliver Notification
+op.deliver_notification.description: Internal notification-provider delivery contract.
+op.deliver_notification.input.event.display_name: Event
+op.deliver_notification.input.event.description: The notification event to deliver.
+op.deliver_notification.input.route.display_name: Route
+op.deliver_notification.input.route.description: Where the notification goes.
+op.deliver_notification.output.delivered.display_name: Delivered
+op.deliver_notification.output.delivered.description: Whether Telegram accepted the message.
+op.deliver_notification.output.provider_message_id.display_name: Telegram message ID
+op.deliver_notification.output.provider_message_id.description: The message ID Telegram returned.
+page.overview.title: Overview
+page.overview.description: Is Telegram ready for this project? Read-only; each incomplete item points at the page that fixes it.
+component.health_panel.title: Readiness
+component.telegram_overview.title: About
+component.telegram_overview.content: 'Sends project events to Telegram chats through the Bot API: job failures and completions, approval requests and decisions. Each project binds its own bot token and named channels; replies and approve/reject/abort decisions come back through the optional inbound path.
+
+
+  Start on **Setup**, then **Chats & Channels**. **Inbound** is only for two-way flows.'
+page.setup.title: Setup
+page.setup.description: Create the bot with @BotFather, save its token, then set optional message defaults.
+component.secrets_form.title: Bot Token
+component.secrets_form.description: Required. The token authenticates the bot, not your Telegram account. It is treated like a password, encrypted at rest, and never displayed after save.
+component.secrets_form.field.bot_token.label: Bot Token
+component.secrets_form.field.bot_token.help: Bot API token from @BotFather. It authenticates the bot, is encrypted at rest, and is never displayed after save. Leave the field empty to keep the stored token; enter a new one to replace it.
+component.secrets_form.field.bot_token.placeholder: 123456:ABC-DEF1234...
+component.secrets_form.section.secrets.title: Bot Token
+component.secrets_form.save_label: Save token
+component.secrets_form.action.verify.label: Verify
+component.quick_start.title: Quick start
+component.quick_start.content: '1. Open the verified [@BotFather](https://t.me/BotFather) account in Telegram.
+
+  2. Run `/newbot` and follow Telegram''s prompts to name the bot.
+
+  3. Copy the generated Bot API token into the **Bot Token** card below.
+
+  4. Save the token and confirm the detected bot username with **Verify**.
+
+  5. Add the bot to the target chat or channel. For private chats and groups, send a message there so discovery has an update to read.
+
+  6. Continue to **Chats & Channels** and save the discovered chat as a named Flow Steward destination.
+
+  7. Configure **Inbound** only when replies or approve/reject/abort human decisions are required.
+
+
+  Telegram''s official guide: [Bot tutorial](https://core.telegram.org/bots/tutorial).'
+component.config_form.title: Message defaults
+component.config_form.description: Optional. How messages are formatted; the bot works without changing these.
+component.config_form.field.disable_web_page_preview.label: Disable Link Previews
+component.config_form.field.message_prefix.label: Message Prefix
+component.config_form.field.message_prefix.help: Optional prefix prepended to all messages.
+component.config_form.field.message_prefix.placeholder: '[Flow Steward]'
+component.config_form.section.general.title: Message defaults
+component.config_form.save_label: Save defaults
+component.setup_guide.title: Detailed guide
+component.setup_guide.content: '## Public chat resolution
+
+
+  A public chat or channel has a username. Paste `@name` or `https://t.me/name` on Chats & Channels and use **Resolve**: the bot asks Telegram for the chat directly, no message required.
+
+
+  ## Private and group discovery
+
+
+  Private chats, groups and private channels have no public username. Add the bot to the chat, send any message there, then use **Discover via Telegram** or **Refresh Discovered Chats**. Discovery reads pending updates through the configured inbound transport (polling or webhook), so it only sees chats that produced an update after the bot joined.
+
+
+  ## Channel permissions
+
+
+  To post into a channel the bot must be an administrator with permission to post messages. In groups it needs to be a member; to read replies in groups it must also be allowed to see messages (privacy mode off, or addressed directly). A saved channel advertises `notify` and `human_decision` capabilities independently.
+
+
+  ## Polling versus webhook
+
+
+  Polling asks Telegram for updates on an interval and needs no public address; it is the convenient choice for local and private setups. Webhook makes Telegram push updates to a public HTTPS callback URL and is the better choice for production. Both are optional: outbound notifications work with neither.
+
+
+  ## Token revocation
+
+
+  The token is the bot''s password. Revoke it in @BotFather with `/revoke` if it may have leaked, then paste the new token into the Bot Token card and save. Saving a new token keeps channels, routes and inbound settings; an empty token field never overwrites the stored token.'
+page.chats_channels.title: Chats & Channels
+page.chats_channels.description: Find the chats the bot can see and save them as named Flow Steward destinations.
+component.chats_intro.title: Chats and channels
+component.chats_intro.content: '**Discovery** finds Telegram chats currently visible to the saved bot: public chats by username, private chats and groups through updates the bot has received.
+
+
+  A **Channel** saves one chat as a stable, named Flow Steward destination. A channel can advertise notification and human-decision capabilities independently. A test notification needs a saved token and an enabled channel.'
+component.chat_discovery_form.title: Chat Discovery
+component.chat_discovery_form.field.chat_link.label: Chat Link or @Username
+component.chat_discovery_form.field.chat_link.help: Public chats can resolve directly. Private invite links use guided discovery via webhook or polling.
+component.chat_discovery_form.field.chat_link.placeholder: '@ops_alerts or https://t.me/ops_alerts'
+component.chat_discovery_form.section.discovery.title: Chat Discovery
+component.chat_discovery_form.action.resolve.label: Resolve
+component.chat_discovery_form.action.discover.label: Discover via Telegram
+component.chat_discovery_form.action.refresh.label: Refresh Discovered Chats
+component.discovered_chats_grid.title: Discovered Chats
+component.discovered_chats_grid.column.title.label: Title
+component.discovered_chats_grid.column.username.label: Username
+component.discovered_chats_grid.column.chat_id.label: Chat ID
+component.discovered_chats_grid.column.type.label: Type
+component.discovered_chats_grid.column.source.label: Source
+component.discovered_chats_grid.column.existing_channel_id.label: Saved Channel
+component.discovered_chats_grid.column.last_seen_at.label: Last Seen
+component.discovered_chats_grid.row_action.save_discovered_chat.label: Save as Channel
+component.discovered_chats_grid.empty_state: No discovered chats yet
+component.discovered_chats_grid.empty_state_description: Resolve a public chat or add the bot to a target chat and refresh discovery.
+component.channels_form.title: Channels
+component.channels_form.field.channels.label: Telegram Channels
+component.channels_form.field.channels.help: Add named project-scoped channels for notifications and human decisions.
+component.channels_form.field.channels.field.channel_id.label: Channel ID
+component.channels_form.field.channels.field.channel_id.placeholder: ops_alerts
+component.channels_form.field.channels.field.display_name.label: Display Name
+component.channels_form.field.channels.field.display_name.placeholder: Ops Alerts
+component.channels_form.field.channels.field.chat_id.label: Chat ID
+component.channels_form.field.channels.field.chat_id.placeholder: '-1001234567890'
+component.channels_form.field.channels.field.enabled.label: Enabled
+component.channels_form.field.channels.field.capabilities.notify.label: Notify Capability
+component.channels_form.field.channels.field.capabilities.human_decision.label: Human Decision Capability
+component.channels_form.section.channels.title: Channels
+component.channels_form.save_label: Save channels
+component.channel_test_grid.title: Test a Channel
+component.channel_test_grid.column.display_name.label: Channel
+component.channel_test_grid.column.channel_id.label: Channel ID
+component.channel_test_grid.column.enabled.label: Enabled
+component.channel_test_grid.column.capabilities.notify.label: Notify
+component.channel_test_grid.row_action.test_delivery.label: Send test
+component.channel_test_grid.empty_state: No channels to test
+component.channel_test_grid.empty_state_description: Save and enable a channel with Notify capability before sending a test.
+page.inbound.title: Inbound
+page.inbound.description: Optional. Needed only for Telegram replies, callback buttons and approve/reject/abort decisions.
+component.inbound_intro.title: Inbound is optional
+component.inbound_intro.content: 'Inbound is optional: outbound notifications do not need it. Configure it only for Telegram replies, callback buttons, and human-in-the-loop approve/reject flows.
+
+
+  **Polling** is convenient for local setups and needs no public address. **Webhook** requires a public HTTPS callback URL and receives updates as they happen. **Auto** prefers a healthy webhook and falls back to polling. An unconfigured inbound path is not an error.'
+component.inbound_mode_form.title: Inbound Mode
+component.inbound_mode_form.field.inbound_mode.label: Inbound Mode
+component.inbound_mode_form.field.inbound_mode.help: Auto prefers webhook when it is configured and healthy, otherwise it falls back to polling.
+component.inbound_mode_form.field.inbound_mode.option.auto.label: Auto
+component.inbound_mode_form.field.inbound_mode.option.webhook.label: Webhook
+component.inbound_mode_form.field.inbound_mode.option.polling.label: Polling
+component.inbound_mode_form.field.polling_interval_seconds.label: Polling Interval
+component.inbound_mode_form.field.polling_interval_seconds.option.15.label: 15 seconds
+component.inbound_mode_form.field.polling_interval_seconds.option.30.label: 30 seconds
+component.inbound_mode_form.field.polling_interval_seconds.option.60.label: 60 seconds
+component.inbound_mode_form.field.polling_interval_seconds.option.120.label: 120 seconds
+component.inbound_mode_form.field.polling_interval_seconds.option.300.label: 300 seconds
+component.inbound_mode_form.section.inbound.title: Inbound Mode
+component.inbound_mode_form.save_label: Save Inbound Settings
+component.inbound_mode_form.action.poll_now.label: Poll Now
+component.telegram_webhook_setup.title: Webhook Setup
+component.inbound_status_grid.title: Active transport and last sync
+component.inbound_status_grid.column.inbound_mode.label: Inbound Mode
+component.inbound_status_grid.column.active_transport.label: Active Transport
+component.inbound_status_grid.column.webhook_status.label: Webhook Status
+component.inbound_status_grid.column.polling_status.label: Polling Status
+component.inbound_status_grid.column.pending_update_count.label: Pending Updates
+component.inbound_status_grid.column.last_update_id.label: Last Update ID
+component.inbound_status_grid.column.last_inbound_sync_at.label: Last Sync
+component.inbound_status_grid.column.last_inbound_error.label: Last Error
+component.inbound_status_grid.empty_state: No inbound state yet
+component.inbound_status_grid.empty_state_description: Configure webhook or run polling to populate inbound status.
+page.deliveries.title: Deliveries
+page.deliveries.description: Delivery summary and history, with retry for failed or skipped rows.
+component.delivery_stats.title: Delivery summary
+component.delivery_grid.title: Delivery History
+component.delivery_grid.column.workflow_label.label: Workflow
+component.delivery_grid.column.event_label.label: Event
+component.delivery_grid.column.severity.label: Severity
+component.delivery_grid.column.status.label: Status
+component.delivery_grid.column.delivered_at.label: Delivered At
+component.delivery_grid.column.provider_message_id.label: Message ID
+component.delivery_grid.column.error_text.label: Error
+component.delivery_grid.row_action.retry_delivery.label: Retry
+component.delivery_grid.empty_state: No deliveries yet
+component.delivery_grid.empty_state_description: Deliveries will appear here once notifications are dispatched.
