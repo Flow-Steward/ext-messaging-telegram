@@ -73,6 +73,10 @@ account_scope:
   scope_type: project
   description: Telegram binding is per-project; each project configures provider
     defaults, bot token, and named channels.
+# Where the extension connects: the Telegram Bot API only.
+egress:
+  hosts:
+  - api.telegram.org
 external_effects:
 - operation_id: send_message
   effect_kind: message_delivery
