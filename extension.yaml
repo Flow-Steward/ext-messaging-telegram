@@ -2,7 +2,7 @@ manifest_version: 2
 lifecycle: {data_schema_version: 1, data_migrations: []}
 extension_id: flowsteward.telegram
 kind: notification_provider
-version: 1.0.2
+version: 1.1.0
 display_name: Telegram Notifications
 description: Sends Flow Steward notifications to Telegram chats via the Bot API. Canonical
   reference integration for notification providers.
@@ -74,6 +74,21 @@ account_scope:
   description: Telegram binding is per-project; each project configures provider
     defaults, bot token, and named channels.
 external_effects:
+- operation_id: send_message
+  effect_kind: message_delivery
+  channel: telegram
+  idempotency: required
+  test_mode_behavior: suppress
+  observability:
+    target_fields:
+    - channel_id
+    target_kind: channel
+    target_label: Telegram channel
+  rate_limit:
+    window_seconds: 60
+    account_max: 60
+    project_max: 30
+    connection_max: 20
 - operation_id: deliver_notification
   effect_kind: message_delivery
   channel: telegram

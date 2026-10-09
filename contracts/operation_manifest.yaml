@@ -1,4 +1,56 @@
 operations:
+  - operation_id: send_message
+    display_name: Send Message
+    description: Post a message from the workflow to one of this bot's Telegram channels.
+    operation_kind: action
+    category: notification
+    connection_type_ids: [telegram_bot]
+    workflow_visible: true
+    inputs:
+      - {name: connection_ref, value_type: connection_ref, required: true}
+      - name: channel_id
+        value_type: text
+        required: false
+        display_name: Channel ID
+        description: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+      - name: text
+        value_type: text
+        required: true
+        display_name: Message
+        description: The text to send, at most 4096 characters. A Template step's result fits here.
+      - name: format
+        value_type: text
+        required: false
+        display_name: Format
+        description: text sends the message as written; html reads Telegram's HTML tags (b, i, u, s, a, code, pre, blockquote).
+      - name: disable_web_page_preview
+        value_type: boolean
+        required: false
+        display_name: No link preview
+        description: Leave out the preview Telegram shows for the first link. Defaults to the connection setting.
+    outputs:
+      - {name: delivered, value_type: boolean, display_name: Delivered, description: Whether Telegram accepted the message.}
+      - {name: provider_message_id, value_type: text, display_name: Telegram message ID, description: The message ID Telegram returned.}
+      - {name: channel_id, value_type: text, display_name: Channel ID, description: The channel the message went to.}
+      - {name: external_effect_status, value_type: text}
+    result_fields:
+      - result.delivered
+      - result.provider_message_id
+      - result.channel_id
+    error_codes:
+      - text_required
+      - format_invalid
+      - project_connection_required
+      - no_notify_channel
+      - channel_id_required
+      - unknown_channel_id
+      - channel_disabled
+      - channel_missing_notify
+      - message_too_long
+      - bot_token_or_chat_id_required
+      - telegram_send_ambiguous
+      - telegram_send_rejected
+      - telegram_send_request_invalid
   - operation_id: deliver_notification
     display_name: Deliver Notification
     description: Internal notification-provider delivery contract.

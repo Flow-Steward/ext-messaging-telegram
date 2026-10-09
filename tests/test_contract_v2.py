@@ -17,7 +17,8 @@ def test_telegram_declares_a_v2_notification_connection() -> None:
     step_ui_manifest = _load_yaml("contracts/step_ui_manifest.yaml").get("forms", [])
 
     assert [row["connection_type_id"] for row in connection_types] == ["telegram_bot"]
-    assert operation_manifest == [
+    delivery = [row for row in operation_manifest if row["operation_id"] == "deliver_notification"]
+    assert delivery == [
         {
             "operation_id": "deliver_notification",
             "display_name": "Deliver Notification",
@@ -35,23 +36,35 @@ def test_telegram_declares_a_v2_notification_connection() -> None:
             ],
         }
     ]
-    assert step_ui_manifest == []
+    # The one form is the Send Message step's; delivery has none.
+    assert [form["operation_id"] for form in step_ui_manifest] == ["send_message"]
 
     config_schema = connection_types[0]["config_schema"]
     assert "parse_mode" not in config_schema["properties"]
 
 
 def test_telegram_management_actions_are_not_workflow_steps() -> None:
+    """Only Send Message is a workflow step; delivery and setup actions are not."""
     operations = _load_yaml("contracts/operation_manifest.yaml")["operations"]
+    actions = _load_yaml("ui/actions/actions.yaml")["actions"]
 
-    assert [row for row in operations if row.get("workflow_visible")] == []
+    assert [row["operation_id"] for row in operations if row.get("workflow_visible")] == [
+        "send_message"
+    ]
+    assert [row["action_id"] for row in actions if row.get("workflow_visible")] == [
+        "send_message"
+    ]
 
 
 def test_telegram_delivery_declares_an_idempotent_external_effect() -> None:
     manifest = _load_yaml("extension.yaml")
     actions = _load_yaml("ui/actions/actions.yaml")["actions"]
 
-    assert manifest["external_effects"] == [
+    effects = {row["operation_id"]: row for row in manifest["external_effects"]}
+    assert set(effects) == {"deliver_notification", "send_message"}
+    assert effects["send_message"]["test_mode_behavior"] == "suppress"
+    assert effects["send_message"]["idempotency"] == "required"
+    assert [effects["deliver_notification"]] == [
         {
             "operation_id": "deliver_notification",
             "effect_kind": "message_delivery",

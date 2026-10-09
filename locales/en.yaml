@@ -182,3 +182,29 @@ component.delivery_grid.column.error_text.label: Error
 component.delivery_grid.row_action.retry_delivery.label: Retry
 component.delivery_grid.empty_state: No deliveries yet
 component.delivery_grid.empty_state_description: Deliveries will appear here once notifications are dispatched.
+
+# Send Message workflow step
+op.send_message.display_name: Send Message
+op.send_message.description: Post a message from the workflow to one of this bot's Telegram channels.
+op.send_message.input.channel_id.display_name: Channel ID
+op.send_message.input.channel_id.description: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+op.send_message.input.text.display_name: Message
+op.send_message.input.text.description: The text to send, at most 4096 characters. A Template step's result fits here.
+op.send_message.input.format.display_name: Format
+op.send_message.input.format.description: text sends the message as written; html reads Telegram's HTML tags (b, i, u, s, a, code, pre, blockquote).
+op.send_message.input.disable_web_page_preview.display_name: No link preview
+op.send_message.input.disable_web_page_preview.description: Leave out the preview Telegram shows for the first link. Defaults to the connection setting.
+op.send_message.output.delivered.display_name: Delivered
+op.send_message.output.delivered.description: Whether Telegram accepted the message.
+op.send_message.output.provider_message_id.display_name: Telegram message ID
+op.send_message.output.provider_message_id.description: The message ID Telegram returned.
+op.send_message.output.channel_id.display_name: Channel ID
+op.send_message.output.channel_id.description: The channel the message went to.
+step.send_message.section: Send Telegram message
+step.send_message.field.channel_id.label: Channel ID
+step.send_message.field.channel_id.help_text: The ID of a channel on the Chats & Channels page. Leave empty when only one channel is enabled for notifications.
+step.send_message.field.channel_id.placeholder: ops-alerts
+step.send_message.field.text.label: Message
+step.send_message.field.text.help_text: At most 4096 characters. Map a Template step's result to send composed text.
+step.send_message.field.format.label: Format
+step.send_message.field.disable_web_page_preview.label: No link preview

@@ -1,4 +1,45 @@
 actions:
+- action_id: send_message
+  workflow_visible: true
+  title: Send Message
+  description: Post a message from the workflow to one of this bot's Telegram channels.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: extension
+  mutates_platform: false
+  parameters:
+  - name: channel_id
+    type: string
+    required: false
+    description: The ID of a channel on the Chats & Channels page; may be left empty when only one channel is enabled for notifications.
+  - name: text
+    type: string
+    required: true
+    description: The text to send, at most 4096 characters.
+  - name: format
+    type: string
+    required: false
+    description: text (as written) or html (Telegram's HTML tags).
+  - name: disable_web_page_preview
+    type: boolean
+    required: false
+  result_fields:
+  - delivered
+  - provider_message_id
+  - channel_id
+  error_codes:
+  - text_required
+  - format_invalid
+  - project_connection_required
+  - no_notify_channel
+  - channel_id_required
+  - unknown_channel_id
+  - channel_disabled
+  - channel_missing_notify
+  - message_too_long
+  - telegram_send_ambiguous
+  - telegram_send_rejected
 - action_id: deliver_notification
   workflow_visible: false
   title: Deliver Notification

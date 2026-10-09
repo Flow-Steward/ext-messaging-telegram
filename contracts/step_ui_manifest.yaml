@@ -1,1 +1,14 @@
-forms: []
+forms:
+  - operation_id: send_message
+    title: Send Telegram message
+    fields:
+      - {name: channel_id, label: Channel ID, widget_type: text, required: false, placeholder: ops-alerts, help_text: The ID of a channel on the Chats & Channels page. Leave empty when only one channel is enabled for notifications.}
+      - {name: text, label: Message, widget_type: textarea, required: true, help_text: At most 4096 characters. Map a Template step's result to send composed text.}
+      - name: format
+        label: Format
+        widget_type: select
+        required: false
+        options:
+          - {label: Plain text, value: text}
+          - {label: Telegram HTML, value: html}
+      - {name: disable_web_page_preview, label: No link preview, widget_type: boolean, required: false}

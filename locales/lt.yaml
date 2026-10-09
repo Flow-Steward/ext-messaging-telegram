@@ -182,3 +182,28 @@ component.delivery_grid.column.error_text.label: Klaida
 component.delivery_grid.row_action.retry_delivery.label: Kartoti
 component.delivery_grid.empty_state: Pristatymų dar nėra
 component.delivery_grid.empty_state_description: Pristatymai atsiras čia, kai bus išsiųsti pranešimai.
+
+# Send Message workflow step
+op.send_message.display_name: Siųsti žinutę
+op.send_message.description: Išsiųsti žinutę iš darbo eigos į vieną iš šio boto Telegram kanalų.
+op.send_message.input.channel_id.display_name: Kanalo ID
+op.send_message.input.channel_id.description: Kanalo ID iš puslapio „Pokalbiai ir kanalai“. Galima palikti tuščią, kai pranešimams įjungtas tik vienas kanalas.
+op.send_message.input.text.display_name: Žinutė
+op.send_message.input.text.description: Siunčiamas tekstas, ne daugiau kaip 4096 simboliai. Tinka šablono žingsnio rezultatas.
+op.send_message.input.format.display_name: Formatas
+op.send_message.input.format.description: text siunčia tekstą taip, kaip parašyta; html supranta Telegram HTML žymes (b, i, u, s, a, code, pre, blockquote).
+op.send_message.input.disable_web_page_preview.display_name: Be nuorodos peržiūros
+op.send_message.input.disable_web_page_preview.description: Nerodyti peržiūros, kurią Telegram sukuria pirmai nuorodai. Pagal numatymą – kaip nustatyta ryšyje.
+op.send_message.output.delivered.display_name: Pristatyta
+op.send_message.output.delivered.description: Ar Telegram priėmė žinutę.
+op.send_message.output.provider_message_id.display_name: Telegram žinutės ID
+op.send_message.output.provider_message_id.description: Telegram grąžintas žinutės ID.
+op.send_message.output.channel_id.display_name: Kanalo ID
+op.send_message.output.channel_id.description: Kanalas, į kurį išsiųsta žinutė.
+step.send_message.section: Siųsti Telegram žinutę
+step.send_message.field.channel_id.label: Kanalo ID
+step.send_message.field.channel_id.help_text: Kanalo ID iš puslapio „Pokalbiai ir kanalai“. Palikite tuščią, kai pranešimams įjungtas tik vienas kanalas.
+step.send_message.field.text.label: Žinutė
+step.send_message.field.text.help_text: Ne daugiau kaip 4096 simboliai. Susiekite šablono žingsnio rezultatą, kad išsiųstumėte sudarytą tekstą.
+step.send_message.field.format.label: Formatas
+step.send_message.field.disable_web_page_preview.label: Be nuorodos peržiūros

@@ -70,6 +70,25 @@ Important behavior:
 - no primary singleton `chat_id` UX
 - no silent reroute to an unrelated default chat
 
+## Send Message workflow step
+
+`send_message` is the one Telegram operation a workflow can use as a step
+(Action Step → Telegram Notifications → Send Message). It posts the text it is
+given, not a rendered platform event, so a Template step in front of it composes
+any message from workflow data.
+
+- The step is bound to a Telegram connection and sends with its bot token.
+- `channel_id` names one of the connection's channels (Chats & Channels page).
+  It may be left empty when exactly one channel is enabled for notifications;
+  otherwise the step fails before sending and lists the channel IDs.
+- `format`: `text` sends the message as written (escaped for Telegram);
+  `html` reads Telegram's HTML subset (b, i, u, s, a, code, pre, blockquote).
+  If Telegram rejects the markup, the message is sent again without it.
+- The connection's message prefix and link-preview setting apply;
+  `disable_web_page_preview` overrides the latter per step.
+- More than 4096 characters is refused (`message_too_long`) rather than cut.
+- Test Run never sends (`external_effect_status: suppressed`).
+
 ## Inbound HITL flow
 
 Telegram callbacks and replies normalize into canonical Flow Steward events.

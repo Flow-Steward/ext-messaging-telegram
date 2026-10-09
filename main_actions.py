@@ -8,6 +8,7 @@ from main_delivery import _deliver
 from main_ingress import _handle_ingress_event_payload
 from main_polling import _poll_updates
 from main_readiness import MESSAGES, classify_bot_api_failure
+from main_send import handle_send_message
 from main_state import (
     _REQUEST_RUNTIME_CONTEXT,
     PROVIDER_KEY,
@@ -57,6 +58,9 @@ def _handle_action(action: dict) -> tuple[dict, int]:
     runtime_context = dict(_as_dict(action.get("runtime_context")) or _REQUEST_RUNTIME_CONTEXT)
     if target and "target" not in runtime_context:
         runtime_context["target"] = target
+    if action_id == "send_message":
+        # A workflow step: everything it needs travels with the action.
+        return handle_send_message(action, runtime_context)
     bl = _resolve_runtime_logger(runtime_context)
     connection = (
         _telegram_connection_row_for_project(bl, str(project_id))
