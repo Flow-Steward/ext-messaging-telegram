@@ -36,8 +36,8 @@ _PLATFORM_STATUS: dict[str, str] = {
 }
 
 MESSAGES: dict[str, str] = {
-    "bot_token_required": "Save a bot token on the Setup page before verifying.",
-    "bot_token_rejected": (
+    "bot_token_required": "Save a bot token on the Setup page before verifying.",  # nosec B105 - an error message, not a secret
+    "bot_token_rejected": (  # nosec B105 - an error message, not a secret
         "Telegram rejected this bot token. Copy a current token from @BotFather and try again."
     ),
     "telegram_unreachable": (

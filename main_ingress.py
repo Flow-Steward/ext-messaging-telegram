@@ -441,7 +441,7 @@ def _ingress_event_response(
             text="Decision received.",
             show_alert=False,
         )
-        events = [
+        events: list[dict[str, Any]] = [
             {
                 "event_type": "notification.interaction_received",
                 "severity": "info",

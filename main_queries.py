@@ -122,7 +122,7 @@ def _handle_query(query: dict) -> tuple[dict, int]:
     if query_id == "list_deliveries":
         if bl is not None and project_id and hasattr(bl, "list_notification_delivery_logs"):
             rows = bl.list_notification_delivery_logs(project_id=project_id, limit=2000) or []
-            deliveries: list[dict[str, Any]] = []
+            deliveries = []
             for row in rows:
                 payload = _as_dict(row)
                 if str(payload.get("provider_key") or "").strip().lower() != PROVIDER_KEY:
@@ -210,24 +210,24 @@ def _handle_query(query: dict) -> tuple[dict, int]:
     if query_id == "get_secrets":
         if not project_id:
             return {"ok": False, "error": "project_context_required"}, 2
-        token = ""
+        token = ""  # nosec B105 - empty until the stored token is read
         if bl is not None and project_id and hasattr(bl, "get_provider_secret"):
             try:
                 token = str(
                     bl.get_provider_secret(
                         provider_key=PROVIDER_KEY,
-                        secret_key="bot_token",
+                        secret_key="bot_token",  # nosec B106 - names the stored secret, not its value
                         project_id=str(project_id),
                         include_global=False,
                     )
                     or ""
                 ).strip()
             except Exception:
-                token = ""
+                token = ""  # nosec B105 - empty when the stored token cannot be read
         return {
             "ok": True,
             "values": {
-                "bot_token": "",
+                "bot_token": "",  # nosec B105 - a secret is never echoed back to the form
             },
             "summary": {
                 "provider": "telegram",

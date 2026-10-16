@@ -67,3 +67,14 @@ class TestTelegramBundleValidity:
             or path.relative_to(BUNDLE_ROOT).match("ui/components/*.json")
         ]
         assert forbidden == []
+
+    def test_bundle_carries_a_valid_logo(self):
+        # Core requires icon.png next to extension.yaml: PNG, square, 32-512 px, <= 100 KB.
+        icon = (BUNDLE_ROOT / "icon.png").read_bytes()
+        assert icon[:8] == b"\x89PNG\r\n\x1a\n"
+        assert icon[12:16] == b"IHDR"
+        width = int.from_bytes(icon[16:20], "big")
+        height = int.from_bytes(icon[20:24], "big")
+        assert width == height
+        assert 32 <= width <= 512
+        assert len(icon) <= 100 * 1024

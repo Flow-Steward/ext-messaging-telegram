@@ -114,6 +114,8 @@ def _subprocess_branches() -> dict[str, set[str]]:
         if isinstance(comparator, ast.Constant):
             ids = [str(comparator.value)]
         else:
+            if not isinstance(comparator, (ast.Tuple, ast.List, ast.Set)):
+                continue
             ids = [str(item.value) for item in comparator.elts if isinstance(item, ast.Constant)]
         emitted: set[str] = set()
         for sub in ast.walk(node):

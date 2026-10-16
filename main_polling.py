@@ -147,8 +147,9 @@ def _poll_updates(
             {"status": "not_configured", "url_configured": False}
         )
     offset = None
-    if _coerce_int(inbound_state.get("last_update_id")) is not None:
-        offset = int(inbound_state.get("last_update_id")) + 1
+    last_update_id = _coerce_int(inbound_state.get("last_update_id"))
+    if last_update_id is not None:
+        offset = last_update_id + 1
     response = _telegram_get_updates(token, offset=offset)
     if not bool(response.get("ok")):
         next_state = dict(inbound_state)

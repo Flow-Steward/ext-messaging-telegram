@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import io
 import json
+from email.message import Message
 from typing import Any
 from urllib.error import HTTPError
 
@@ -110,7 +111,7 @@ def _http_error(code: int, description: str) -> HTTPError:
         "https://api.telegram.org/botTOKEN/sendMessage",
         code,
         description,
-        {},
+        Message(),
         io.BytesIO(body),
     )
 
@@ -213,7 +214,7 @@ def test_send_message_rate_limit_exposes_bounded_retry_facts(monkeypatch) -> Non
         "https://api.telegram.org/botTOKEN/sendMessage",
         429,
         "Too Many Requests",
-        {},
+        Message(),
         io.BytesIO(body),
     )
     monkeypatch.setattr(

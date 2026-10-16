@@ -27,7 +27,7 @@ from main_transport import (
     _send_message,
 )
 
-_TOKEN_APPROVAL_RESOLVED = "approval.resolved"
+_TOKEN_APPROVAL_RESOLVED = "approval.resolved"  # nosec B105 - an event type, not a secret
 
 _TELEGRAM_MESSAGE_LIMIT = 4096
 _HTML_TAG_RE = re.compile(r"<[^>]*>")

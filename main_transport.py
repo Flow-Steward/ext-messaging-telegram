@@ -80,7 +80,7 @@ def _telegram_http_error_response(
 def _telegram_retry_after_seconds(parsed: dict[str, Any]) -> float | None:
     parameters = _as_dict(parsed.get("parameters"))
     try:
-        value = float(parameters.get("retry_after"))
+        value = float(parameters.get("retry_after") or 0)
     except (TypeError, ValueError):
         return None
     return value if value > 0 else None
@@ -420,7 +420,7 @@ def _send_message(
 
     retry_without_parse_mode = False
     try:
-        with urlrequest.urlopen(req, timeout=10) as response:
+        with urlrequest.urlopen(req, timeout=10) as response:  # nosec B310 - a fixed Telegram Bot API https URL
             raw = response.read().decode("utf-8", errors="replace")
             parsed = _as_dict(json.loads(raw) if raw else {})
             status = int(getattr(response, "status", 200) or 200)
@@ -483,7 +483,7 @@ def _send_message(
             "definitely_no_external_effect": True,
         }
     try:
-        with urlrequest.urlopen(retry_req, timeout=10) as response:
+        with urlrequest.urlopen(retry_req, timeout=10) as response:  # nosec B310 - a fixed Telegram Bot API https URL
             raw = response.read().decode("utf-8", errors="replace")
             parsed = _as_dict(json.loads(raw) if raw else {})
             if int(getattr(response, "status", 200) or 200) == 200 and parsed.get("ok") is True:
@@ -545,7 +545,7 @@ def _answer_callback_query(
         method="POST",
     )
     try:
-        with urlrequest.urlopen(req, timeout=10) as response:
+        with urlrequest.urlopen(req, timeout=10) as response:  # nosec B310 - a fixed Telegram Bot API https URL
             return int(getattr(response, "status", 200) or 200) == 200
     except Exception:
         return False
@@ -627,7 +627,7 @@ def _telegram_api_call(token: str, method_name: str, payload: dict | None = None
         method="POST" if payload is not None else "GET",
     )
     try:
-        with urlrequest.urlopen(req, timeout=10) as response:
+        with urlrequest.urlopen(req, timeout=10) as response:  # nosec B310 - a fixed Telegram Bot API https URL
             raw = response.read().decode("utf-8", errors="replace")
             parsed = json.loads(raw) if raw else {}
             return _as_dict(parsed)
@@ -655,7 +655,7 @@ def _telegram_token_for_project(
         return _as_str(
             bl.get_provider_secret(
                 provider_key=PROVIDER_KEY,
-                secret_key="bot_token",
+                secret_key="bot_token",  # nosec B106 - names the stored secret, not its value
                 project_id=str(project_id),
                 include_global=False,
             )
@@ -676,7 +676,7 @@ def _retry_error_message(error_code: Any) -> str:
         "channel_missing_notify": "Retry failed: the configured Telegram channel cannot send notifications.",
         "channel_missing_human_decision": "Retry failed: the configured Telegram channel cannot handle human decisions.",
         "channel_id_required": "Retry failed: the target Telegram chat is missing.",
-        "bot_token_or_chat_id_required": "Retry failed: Telegram bot token or chat id is missing.",
+        "bot_token_or_chat_id_required": "Retry failed: Telegram bot token or chat id is missing.",  # nosec B105 - an error message, not a secret
     }
     return mapping.get(code) or f"Retry failed: {code or 'unknown error'}."
 

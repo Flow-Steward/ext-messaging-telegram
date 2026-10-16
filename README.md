@@ -24,6 +24,7 @@ older Core does not run it.
 - `extension.yaml`: top-level bundle manifest and callback wiring
 - `main.py`: subprocess runtime for queries, actions, outbound delivery, and inbound event normalization
 - `health.py`: lightweight health probe
+- `icon.png`: the extension logo (Logo: icon.png, the Flow Steward wave mark; PNG, 128x128)
 - `schemas/`
   - `config.schema.yaml`: provider defaults only
   - `secrets.schema.yaml`: secret values only

@@ -417,15 +417,15 @@ def _handle_action(action: dict) -> tuple[dict, int]:
                 "result": {"verified": True, "bot_username": username, "bot_id": me.get("id")},
                 "reload": ["health_panel"],
             }, 0
-        code = (
+        failure_code = (
             "bot_token_rejected"
             if classify_bot_api_failure(api_response) == "unauthorized"
             else "telegram_unreachable"
         )
         return {
             "ok": False,
-            "error": code,
-            "message": MESSAGES[code],
+            "error": failure_code,
+            "message": MESSAGES[failure_code],
             "result": {"verified": False},
         }, 2
 
@@ -544,14 +544,14 @@ def _handle_action(action: dict) -> tuple[dict, int]:
         ok = bool(api_response.get("ok"))
         next_state = dict(inbound_state)
         if ok and bool(_as_str(info.get("url"))):
-            webhook_status = "healthy"
+            webhook_state = "healthy"
         elif ok:
-            webhook_status = "not_configured"
+            webhook_state = "not_configured"
         else:
-            webhook_status = "failed"
+            webhook_state = "failed"
         next_state["webhook_status"] = _webhook_projection(
             {
-                "status": webhook_status,
+                "status": webhook_state,
                 "url_configured": bool(_as_str(info.get("url"))),
                 "pending_update_count": _coerce_int(info.get("pending_update_count")) or 0,
                 "last_error_message": _as_str(info.get("last_error_message")),

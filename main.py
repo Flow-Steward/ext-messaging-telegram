@@ -279,9 +279,9 @@ _SPLIT_MODULE_NAMES = (
 
 _ACTION_ERROR_CODE_RE = re.compile(r"^[a-z0-9][a-z0-9_.:-]{0,127}$")
 _ACTION_ERROR_MESSAGES = {
-    "bot_token_required": "Save a bot token before running this Telegram action.",
-    "bot_token_or_chat_id_required": "A saved bot token and Telegram channel are required.",
-    "bot_token_rejected": "Telegram rejected the saved bot token. Replace it and try again.",
+    "bot_token_required": "Save a bot token before running this Telegram action.",  # nosec B105 - an error message, not a secret
+    "bot_token_or_chat_id_required": "A saved bot token and Telegram channel are required.",  # nosec B105 - an error message, not a secret
+    "bot_token_rejected": "Telegram rejected the saved bot token. Replace it and try again.",  # nosec B105 - an error message, not a secret
     "callback_url_required": "Enter a callback URL before configuring the webhook.",
     "channel_already_exists": "This Telegram chat is already saved as a channel.",
     "channel_id_duplicate": "Choose a unique Telegram channel ID.",
@@ -438,8 +438,8 @@ def main() -> int:
         print(json.dumps(result))
         return 0 if result.get("ok") is True else 2
 
-    action = _as_str(request.get("action"))
-    if action == "deliver_notification":
+    request_kind = _as_str(request.get("action"))
+    if request_kind == "deliver_notification":
         event = _as_dict(request.get("event"))
         route = _as_dict(request.get("route"))
         provider = _as_dict(request.get("provider"))
@@ -475,14 +475,14 @@ def main() -> int:
         print(json.dumps(result))
         return 0 if bool(result.get("ok")) else 2
 
-    if action == "ingress_event":
+    if request_kind == "ingress_event":
         result, _code = _handle_ingress_event_payload({"request": _as_dict(request.get("request"))})
         result = _public_response(result)
         print(json.dumps(result))
         return 0 if result.get("ok") is True else 2
 
     error_code = "unsupported_request"
-    error = f"Unsupported Telegram request: {mode or action or 'missing mode'}"
+    error = f"Unsupported Telegram request: {mode or request_kind or 'missing mode'}"
     print(json.dumps(_public_response({"ok": False, "error_code": error_code, "error": error})))
     return 2
 

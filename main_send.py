@@ -127,9 +127,8 @@ def handle_send_message(
         item for item in _as_list(_channel_items_from_config(config)) if isinstance(item, dict)
     ]
     channel, failure = _select_channel(channels, _as_str(input_payload.get("channel_id")))
-    if failure is not None:
-        return failure
-    assert channel is not None
+    if failure is not None or channel is None:
+        return failure or _failure("channel_id_required", "Choose a Telegram channel by its ID.")
 
     body = html.escape(text, quote=False) if message_format == "text" else text
     prefix = _as_str(config.get("message_prefix"))

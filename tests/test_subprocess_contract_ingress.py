@@ -409,7 +409,7 @@ class TestTelegramIngressEvent:
 
         class _FakeLogger:
             def __init__(self) -> None:
-                self.tokens = []
+                self.tokens: list[str] = []
 
             def consume_project_connection_ingress_token(self, **kwargs) -> bool:
                 self.tokens.append(kwargs["token"])
