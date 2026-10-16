@@ -14,6 +14,8 @@ import re
 import sys
 from types import ModuleType
 
+from flowsteward_extension_sdk import runtime_context_from_payload
+
 import main_state as _state
 from main_actions import (
     _handle_action as _handle_action,
@@ -395,6 +397,21 @@ def main() -> int:
             }
         )
         print(json.dumps(result))
+        return 2
+    # The host envelope is checked before anything is read, sent or saved:
+    # another contract, a missing execution-scope key or two owners is refused.
+    try:
+        runtime_context_from_payload(request)
+    except ValueError as exc:
+        refused: dict = {
+            "ok": False,
+            "error_code": "invalid_host_envelope",
+            "error": str(exc),
+            "definitely_no_external_effect": True,
+        }
+        if _as_str(request.get("action")) == "deliver_notification":
+            refused["delivered"] = False
+        print(json.dumps(_public_response(refused)))
         return 2
     _state._REQUEST_RUNTIME_CONTEXT.clear()
     _state._REQUEST_RUNTIME_CONTEXT.update(_as_dict(request.get("runtime_context")))

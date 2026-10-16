@@ -141,11 +141,35 @@ def _job_context(bl: Any, job_id: str) -> dict[str, Any]:
         return {}
 
 
+def _scope_value(event: dict[str, Any], payload: dict[str, Any], key: str) -> str:
+    return _as_str(event.get(key)) or _as_str(payload.get(key))
+
+
+def _approval_job_id(event: dict[str, Any]) -> str:
+    """The job that holds the approval a notification asks to decide.
+
+    A child's approval delivered to a waiting ancestor (``propagated: true``)
+    is decided on ``approval_job_id``, never on the ancestor's ``job_id``;
+    without it there is no job to decide on.
+    """
+    payload = _as_dict(event.get("payload"))
+    if payload.get("propagated") is True:
+        return _as_str(payload.get("approval_job_id"))
+    return _as_job_id(
+        event.get("job_id") if event.get("job_id") is not None else payload.get("job_id")
+    )
+
+
 def _message_context(event: dict[str, Any], provider: dict | None = None) -> dict[str, str]:
     _ = provider
     payload = _as_dict(event.get("payload"))
     bl = _runtime_logger(_REQUEST_RUNTIME_CONTEXT)
-    job_id = _as_str(event.get("job_id") or payload.get("job_id"))
+    propagated = payload.get("propagated") is True
+    job_id = (
+        _approval_job_id(event)
+        if propagated
+        else _as_str(event.get("job_id") or payload.get("job_id"))
+    )
     job = _job_context(bl, job_id)
     workflow_id = _as_str(
         event.get("workflow_id")
@@ -159,26 +183,18 @@ def _message_context(event: dict[str, Any], provider: dict | None = None) -> dic
         or payload.get("workflow_display_name")
         or _workflow_display_name(bl, workflow_id)
     ) or _humanize_token(workflow_id)
-    phase_id = _as_str(
-        event.get("phase_id")
-        or event.get("current_phase_id")
-        or payload.get("phase_id")
-        or payload.get("current_phase_id")
-        or payload.get("phase")
-        or job.get("current_phase")
-    )
-    phase_label = _as_str(
-        payload.get("phase_label") or payload.get("phase_name")
-    ) or _humanize_token(phase_id)
-    step_id = _as_str(
-        event.get("step_id")
-        or event.get("current_step_scope_id")
-        or payload.get("step_id")
-        or payload.get("current_step_scope_id")
-        or payload.get("step")
-    )
-    step_label = _as_str(payload.get("step_label") or payload.get("step_name")) or _humanize_token(
-        step_id
+    # The final execution scope: a Group line only for a real group, a For each
+    # line only for a For each, a Step line only for a step. The root of a
+    # workflow has no label of its own.
+    group_id = _scope_value(event, payload, "group_id")
+    for_each_id = _scope_value(event, payload, "for_each_id")
+    step_id = _scope_value(event, payload, "step_id")
+    group_label = (_as_str(payload.get("group_label")) or group_id) if group_id else ""
+    for_each_label = (_as_str(payload.get("for_each_label")) or for_each_id) if for_each_id else ""
+    step_label = (
+        (_as_str(payload.get("step_label") or payload.get("step_name")) or step_id)
+        if step_id
+        else ""
     )
     summary = _as_str(
         payload.get("message")
@@ -194,7 +210,12 @@ def _message_context(event: dict[str, Any], provider: dict | None = None) -> dic
         "job_id": job_id,
         "workflow_id": workflow_id,
         "workflow_label": workflow_label,
-        "phase_label": phase_label,
+        "group_id": group_id,
+        "group_label": group_label,
+        "for_each_id": for_each_id,
+        "for_each_label": for_each_label,
+        "step_id": step_id,
+        "step_execution_id": _scope_value(event, payload, "step_execution_id"),
         "step_label": step_label,
         "task_summary": task_summary,
         "summary": summary,

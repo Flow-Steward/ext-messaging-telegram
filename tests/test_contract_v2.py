@@ -51,9 +51,7 @@ def test_telegram_management_actions_are_not_workflow_steps() -> None:
     assert [row["operation_id"] for row in operations if row.get("workflow_visible")] == [
         "send_message"
     ]
-    assert [row["action_id"] for row in actions if row.get("workflow_visible")] == [
-        "send_message"
-    ]
+    assert [row["action_id"] for row in actions if row.get("workflow_visible")] == ["send_message"]
 
 
 def test_telegram_delivery_declares_an_idempotent_external_effect() -> None:

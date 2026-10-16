@@ -8,6 +8,17 @@
 - outbound notifications
 - inbound human-in-the-loop callbacks
 
+## Requirements
+
+This release (1.2.0) speaks the host contract `extension_host_v2` with its final
+execution scope (`group_id`, `for_each_id`, `step_id`, `step_execution_id`)
+and is built on `flowsteward-extension-sdk` 0.4.0. Every request (query,
+action, notification delivery, inbound callback) with another contract, a
+missing scope key, both a Group and a For each as its owner, or a step without
+its execution is refused (`invalid_host_envelope`) before anything is read,
+sent or saved. Install it on a Flow Steward Core that speaks this contract; an
+older Core does not run it.
+
 ## Bundle layout
 
 - `extension.yaml`: top-level bundle manifest and callback wiring
@@ -63,6 +74,10 @@ Each channel has:
    - channel has the required capability
 5. Telegram `sendMessage` is called with the fixed safe HTML rendering mode, provider
    defaults, and an optional message prefix.
+   The message names the workflow and job, then a `Group:` line only for a step
+   or event in a Group, a `For each:` line only for one in a For each, and a
+   `Step:` line only for a step (the Core labels, or the ids without them).
+   There is no phase.
 6. The real Telegram `message_id` is returned and persisted as `provider_message_id`.
 
 Important behavior:
@@ -104,6 +119,11 @@ Approve / reject / abort flow:
    - next reply emits completion event
 5. Free-form reject comments emit `external.comment.received`
 6. When the workflow's rework budget is exhausted, the gate exposes Abort instead of Reject.
+   The buttons and commands are exactly the approval's `allowed_actions`
+   (`approve`/`reject`, or `approve`/`abort`); anything else is refused.
+7. A child workflow's approval delivered to its waiting parent
+   (`propagated: true`) is decided on `approval_job_id` + `approval_id`; the job
+   link and the decision address the child's job, never the parent's `job_id`.
 
 The callback payload format is compact enough to support UUID project ids while staying inside Telegram limits.
 

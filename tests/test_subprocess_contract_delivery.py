@@ -5,7 +5,7 @@ import json
 import sys
 
 import pytest
-from subprocess_contract_helpers import _invoke
+from subprocess_contract_helpers import _invoke, host_envelope
 
 
 class TestTelegramDeliverNotification:
@@ -50,7 +50,7 @@ class TestTelegramDeliverNotification:
             captured.update(provider)
             return {"ok": True}
 
-        monkeypatch.setattr(sys, "stdin", io.StringIO(json.dumps(request)))
+        monkeypatch.setattr(sys, "stdin", io.StringIO(json.dumps(host_envelope(request))))
         monkeypatch.setattr(telegram_main, "_deliver", capture)
 
         assert telegram_main.main() == 0
@@ -73,7 +73,9 @@ class TestTelegramDeliverNotification:
                     "workflow_id": "weekly_report",
                     "payload": {
                         "workflow_label": "Weekly Report",
-                        "phase_label": "Review",
+                        "group_id": "review",
+                        "group_label": "Review",
+                        "step_id": "human_approval",
                         "step_label": "Human Approval",
                         "message": "Please review the generated draft.",
                     },
@@ -86,7 +88,9 @@ class TestTelegramDeliverNotification:
         assert "[INFO] Approval requested" in message
         assert "Workflow: <a href=" in message
         assert ">Weekly Report</a>" in message
-        assert "Phase: Review" in message
+        assert "Group: Review" in message
+        assert "Phase" not in message
+        assert "For each:" not in message
         assert "Step: Human Approval" in message
         assert "Please review the generated draft." in message
         assert 'Job: <a href="' in message
@@ -198,7 +202,9 @@ class TestTelegramDeliverNotification:
             "workflow_id": "weekly_report",
             "payload": {
                 "workflow_label": "Weekly Report",
-                "phase_label": "Review",
+                "group_id": "review",
+                "group_label": "Review",
+                "step_id": "human_approval",
                 "step_label": "Human Approval",
                 "message": "Please review the generated draft.",
             },
@@ -511,57 +517,106 @@ class TestTelegramDeliverNotification:
         assert len(sent) == 1
         assert "older approval buttons no longer apply" in sent[0]
 
-    def test_render_message_shows_only_available_scope_levels(self):
+    @pytest.mark.parametrize(
+        ("scope", "expected", "absent"),
+        [
+            # Workflow-level event: all four scope keys null.
+            (
+                {"group_id": None, "for_each_id": None, "step_id": None},
+                [],
+                ["Group:", "For each:", "Step:"],
+            ),
+            # Group-level event names only its container.
+            (
+                {"group_id": "review_changes", "group_label": "Review changes"},
+                ["Group: Review changes"],
+                ["For each:", "Step:"],
+            ),
+            # For each-level event names only its container.
+            (
+                {"for_each_id": "each_order", "for_each_label": "Each order"},
+                ["For each: Each order"],
+                ["Group:", "Step:"],
+            ),
+            # Root step: no owner, so no Group line and no root label.
+            (
+                {"group_id": None, "for_each_id": None, "step_id": "notify_team"},
+                ["Step: notify_team"],
+                ["Group:", "For each:", "Root"],
+            ),
+            # Step directly in a Group.
+            (
+                {
+                    "group_id": "review_changes",
+                    "group_label": "Review changes",
+                    "step_id": "human_approval",
+                    "step_label": "Human Approval",
+                },
+                ["Group: Review changes", "Step: Human Approval"],
+                ["For each:"],
+            ),
+            # Step in a For each: never a Group line.
+            (
+                {
+                    "group_id": None,
+                    "for_each_id": "each_order",
+                    "for_each_label": "Each order",
+                    "step_id": "notify_team",
+                    "step_label": "Notify team",
+                },
+                ["For each: Each order", "Step: Notify team"],
+                ["Group:"],
+            ),
+            # Without a label the id is shown.
+            (
+                {"group_id": "review_changes", "step_id": "human_approval"},
+                ["Group: review_changes", "Step: human_approval"],
+                ["For each:"],
+            ),
+        ],
+    )
+    def test_render_message_shows_only_the_final_scope_levels(self, scope, expected, absent):
         import main as telegram_main
 
-        workflow_only = telegram_main._render_message(
+        message = telegram_main._render_message(
             {
                 "event_type": "workflow.automation.notify",
                 "severity": "info",
                 "payload": {
                     "workflow_label": "Weekly Report",
-                    "message": "Workflow-level message.",
-                },
-            },
-            {"route_config": {}},
-        )
-        phase_level = telegram_main._render_message(
-            {
-                "event_type": "workflow.automation.notify",
-                "severity": "info",
-                "payload": {
-                    "workflow_label": "Weekly Report",
+                    "message": "Scoped message.",
+                    # A leftover phase or a label without its id is not a scope level.
                     "phase_label": "Review",
-                    "message": "Phase-level message.",
+                    **({} if scope.get("group_id") else {"group_label": "Stale group"}),
+                    **scope,
                 },
             },
             {"route_config": {}},
         )
-        step_level = telegram_main._render_message(
+
+        assert "Workflow: Weekly Report" in message
+        assert "Phase" not in message
+        for line in expected:
+            assert line in message
+        for line in absent:
+            assert line not in message
+
+    def test_render_message_reads_scope_from_the_event_root(self):
+        import main as telegram_main
+
+        message = telegram_main._render_message(
             {
-                "event_type": "workflow.automation.notify",
-                "severity": "info",
-                "payload": {
-                    "workflow_label": "Weekly Report",
-                    "phase_label": "Review",
-                    "step_label": "Human Approval",
-                    "message": "Step-level message.",
-                },
+                "event_type": "job.step_failed",
+                "severity": "error",
+                "group_id": "review_changes",
+                "step_id": "human_approval",
+                "payload": {"group_label": "Review changes", "message": "Failed."},
             },
             {"route_config": {}},
         )
 
-        assert "Workflow: Weekly Report" in workflow_only
-        assert "Phase:" not in workflow_only
-        assert "Step:" not in workflow_only
-
-        assert "Workflow: Weekly Report" in phase_level
-        assert "Phase: Review" in phase_level
-        assert "Step:" not in phase_level
-
-        assert "Workflow: Weekly Report" in step_level
-        assert "Phase: Review" in step_level
-        assert "Step: Human Approval" in step_level
+        assert "Group: Review changes" in message
+        assert "Step: human_approval" in message
 
     def test_render_message_makes_workflow_label_clickable_when_public_base_url_exists(self):
         import main as telegram_main

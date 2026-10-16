@@ -2,7 +2,7 @@ manifest_version: 2
 lifecycle: {data_schema_version: 1, data_migrations: []}
 extension_id: flowsteward.telegram
 kind: notification_provider
-version: 1.1.0
+version: 1.2.0
 display_name: Telegram Notifications
 description: Sends Flow Steward notifications to Telegram chats via the Bot API. Canonical
   reference integration for notification providers.
@@ -114,6 +114,7 @@ callbacks:
     type: shared_secret_header
     header: X-Telegram-Bot-Api-Secret-Token
 runtime:
+  contract_version: extension_host_v2
   extension_contract_v2:
     connection_types: contracts/connection_types.yaml
     operation_manifest: contracts/operation_manifest.yaml

@@ -99,7 +99,8 @@ def handle_send_message(
     message_format = _as_str(input_payload.get("format")).lower() or "text"
     if message_format not in FORMATS:
         return _failure(
-            "format_invalid", f"Format must be one of: {', '.join(FORMATS)}; got '{message_format}'."
+            "format_invalid",
+            f"Format must be one of: {', '.join(FORMATS)}; got '{message_format}'.",
         )
     if _test_mode(action, runtime_context):
         # Test Run never sends: the step reports what it would have done.
@@ -122,7 +123,9 @@ def handle_send_message(
         )
     config = _as_dict(connection.get("connection_config") or connection.get("config"))
     token = _as_str(_as_dict(connection.get("secrets")).get("bot_token"))
-    channels = [item for item in _as_list(_channel_items_from_config(config)) if isinstance(item, dict)]
+    channels = [
+        item for item in _as_list(_channel_items_from_config(config)) if isinstance(item, dict)
+    ]
     channel, failure = _select_channel(channels, _as_str(input_payload.get("channel_id")))
     if failure is not None:
         return failure

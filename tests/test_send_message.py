@@ -15,6 +15,7 @@ BUNDLE_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(BUNDLE_ROOT))
 
 import main_send  # noqa: E402
+from subprocess_contract_helpers import host_envelope  # noqa: E402
 
 
 def _channel(channel_id: str, *, enabled: bool = True, notify: bool = True) -> dict[str, Any]:
@@ -54,7 +55,7 @@ def _action(
 def _invoke(action: dict[str, Any]) -> tuple[dict[str, Any], int]:
     proc = subprocess.run(
         [sys.executable, str(BUNDLE_ROOT / "main.py")],
-        input=json.dumps({"mode": "action", "action": action}),
+        input=json.dumps(host_envelope({"mode": "action", "action": action})),
         capture_output=True,
         text=True,
         timeout=10,
@@ -125,7 +126,11 @@ def test_the_connection_prefix_and_preview_setting_apply(sent: list[dict[str, An
 
 
 def test_the_only_notify_channel_is_used_when_none_is_named(sent: list[dict[str, Any]]) -> None:
-    channels = [_channel("ops"), _channel("approvals", notify=False), _channel("old", enabled=False)]
+    channels = [
+        _channel("ops"),
+        _channel("approvals", notify=False),
+        _channel("old", enabled=False),
+    ]
     result, code = main_send.handle_send_message(_action({"text": "Hi"}, channels=channels), {})
 
     assert code == 0

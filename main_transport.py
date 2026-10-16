@@ -14,8 +14,8 @@ from main_state import (
     APPROVAL_REQUESTED_VALUE,
     JOB_AWAITING_APPROVAL_VALUE,
     PROVIDER_KEY,
+    _approval_job_id,
     _as_dict,
-    _as_job_id,
     _as_str,
     _build_callback_data,
     _channel_items_from_config,
@@ -217,8 +217,10 @@ def _render_message(event: dict, route: dict, provider: dict | None = None) -> s
         parts.append(workflow_line)
     if job_line:
         parts.append(job_line)
-    if context["phase_label"]:
-        parts.append(f"Phase: {_html_escape(context['phase_label'])}")
+    if context["group_label"]:
+        parts.append(f"Group: {_html_escape(context['group_label'])}")
+    if context["for_each_label"]:
+        parts.append(f"For each: {_html_escape(context['for_each_label'])}")
     if context["step_label"]:
         parts.append(f"Step: {_html_escape(context['step_label'])}")
     if context["summary"]:
@@ -713,9 +715,8 @@ def _approval_reply_markup(
         event.get("project_id"),
         payload.get("project_id"),
     )
-    job_id = _as_job_id(
-        event.get("job_id") if event.get("job_id") is not None else payload.get("job_id")
-    )
+    # A propagated child approval is decided on its own job (approval_job_id).
+    job_id = _approval_job_id(event)
     approval_id = _as_str(payload.get("approval_id"))
     if not project_id or not job_id or not approval_id:
         return {}

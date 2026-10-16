@@ -7,6 +7,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 import yaml
+from subprocess_contract_helpers import host_envelope
 
 BUNDLE_ROOT = Path(__file__).resolve().parents[1]
 
@@ -14,7 +15,7 @@ BUNDLE_ROOT = Path(__file__).resolve().parents[1]
 def _invoke(request: dict, timeout: int = 5) -> tuple[dict, int]:
     proc = subprocess.run(
         [sys.executable, str(BUNDLE_ROOT / "main.py")],
-        input=json.dumps(request),
+        input=json.dumps(host_envelope(request)),
         capture_output=True,
         text=True,
         timeout=timeout,
