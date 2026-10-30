@@ -289,6 +289,7 @@ def _send_message(
     disable_web_page_preview: bool = True,
     reply_markup: dict[str, Any] | None = None,
     reply_to_message_id: int | None = None,
+    disable_notification: bool = False,
 ) -> dict[str, Any]:
     if not token or not chat_id:
         return {
@@ -314,6 +315,8 @@ def _send_message(
     if reply_to_message_id is not None:
         payload["reply_to_message_id"] = int(reply_to_message_id)
         payload["allow_sending_without_reply"] = True
+    if disable_notification:
+        payload["disable_notification"] = True
 
     def ambiguous_failure(error: Any, *, failure_class: str = "transient") -> dict[str, Any]:
         return {
@@ -634,7 +637,7 @@ def _telegram_api_call(token: str, method_name: str, payload: dict | None = None
     except urlerror.HTTPError as exc:
         request_semantics = (
             "safe_read"
-            if method_name in {"getMe", "getChat", "getUpdates", "getWebhookInfo"}
+            if method_name in {"getMe", "getChat", "getUpdates", "getWebhookInfo", "getFile"}
             else "mutation"
         )
         return _telegram_http_error_response(exc, request_semantics=request_semantics)

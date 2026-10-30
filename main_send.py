@@ -1,5 +1,9 @@
 """Send Message: a workflow step that posts a text to one of the bot's channels.
 
+Besides the text the step can reply to a message, send silently and attach an
+inline keyboard (rows of buttons with a URL or callback data). The other message
+steps (files, edit, delete, pin, download) live in ``main_steps``.
+
 Unlike ``deliver_notification``, which renders a platform event, this sends
 exactly the text the workflow gives it: a Template step's result, a literal, any
 workflow variable. The step is bound to a Telegram connection (its bot token and
@@ -10,13 +14,17 @@ enabled for notifications may leave the channel out.
 from __future__ import annotations
 
 import html
+import json
 from typing import Any
 
 from main_state import _as_dict, _as_list, _as_str, _channel_items_from_config, _coerce_bool
 from main_transport import _send_message
 
 TELEGRAM_MESSAGE_LIMIT = 4096
+TELEGRAM_CALLBACK_DATA_LIMIT_BYTES = 64
 FORMATS = ("text", "html")
+# Callback data with this prefix belongs to approval buttons the extension builds.
+_RESERVED_CALLBACK_PREFIX = "tgx:"
 
 
 def _failure(code: str, message: str) -> tuple[dict[str, Any], int]:
@@ -32,6 +40,104 @@ def _failure(code: str, message: str) -> tuple[dict[str, Any], int]:
         },
         2,
     )
+
+
+def positive_int(value: Any) -> int | None:
+    """A positive integer from an int or a digit string, else ``None``."""
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return value if value > 0 else None
+    if isinstance(value, str) and value.strip().isdigit():
+        number = int(value.strip())
+        return number if number > 0 else None
+    return None
+
+
+def parse_inline_keyboard(
+    value: Any,
+) -> tuple[dict[str, Any] | None, tuple[dict[str, Any], int] | None]:
+    """The Telegram ``reply_markup`` for rows of buttons, or the failure explaining why not.
+
+    ``value`` is a list of rows; a row is a list of ``{text, url | callback_data}``
+    objects. A JSON string of that list is accepted too, as a workflow variable
+    often arrives as text. Empty or absent means no keyboard.
+    """
+    if value is None or value == "" or value == []:
+        return None, None
+    if isinstance(value, str):
+        try:
+            value = json.loads(value)
+        except ValueError:
+            return None, _failure("keyboard_invalid", "The buttons are not valid JSON.")
+    if not isinstance(value, list):
+        return None, _failure("keyboard_invalid", "Buttons must be a list of rows of buttons.")
+    rows: list[list[dict[str, str]]] = []
+    for row_index, raw_row in enumerate(value, start=1):
+        if not isinstance(raw_row, list) or not raw_row:
+            return None, _failure(
+                "keyboard_invalid", f"Row {row_index} must be a non-empty list of buttons."
+            )
+        row: list[dict[str, str]] = []
+        for raw_button in raw_row:
+            button = _as_dict(raw_button)
+            text = _as_str(button.get("text"))
+            url = _as_str(button.get("url"))
+            callback_data = _as_str(button.get("callback_data"))
+            if not text:
+                return None, _failure(
+                    "keyboard_invalid", f"Every button in row {row_index} needs a text."
+                )
+            if bool(url) == bool(callback_data):
+                return None, _failure(
+                    "keyboard_invalid",
+                    f"Button '{text}' needs exactly one of url or callback_data.",
+                )
+            if callback_data:
+                if len(callback_data.encode("utf-8")) > TELEGRAM_CALLBACK_DATA_LIMIT_BYTES:
+                    return None, _failure(
+                        "keyboard_invalid",
+                        f"callback_data of button '{text}' is longer than "
+                        f"{TELEGRAM_CALLBACK_DATA_LIMIT_BYTES} bytes.",
+                    )
+                if callback_data.startswith(_RESERVED_CALLBACK_PREFIX):
+                    return None, _failure(
+                        "keyboard_invalid",
+                        f"callback_data may not start with '{_RESERVED_CALLBACK_PREFIX}'; "
+                        "it is reserved for approval buttons.",
+                    )
+            row.append(
+                {"text": text, **({"url": url} if url else {"callback_data": callback_data})}
+            )
+        rows.append(row)
+    return {"inline_keyboard": rows}, None
+
+
+def parse_send_options(
+    input_payload: dict[str, Any],
+) -> tuple[dict[str, Any], tuple[dict[str, Any], int] | None]:
+    """The optional reply / silent / keyboard inputs as transport keyword arguments.
+
+    Only the options the step was given are returned, so a step that gives none
+    sends exactly what it always sent.
+    """
+    options: dict[str, Any] = {}
+    if input_payload.get("reply_to_message_id") not in (None, ""):
+        reply_to = positive_int(input_payload.get("reply_to_message_id"))
+        if reply_to is None:
+            return {}, _failure(
+                "reply_to_message_id_invalid",
+                "reply_to_message_id must be a Telegram message ID (a positive whole number).",
+            )
+        options["reply_to_message_id"] = reply_to
+    if _coerce_bool(input_payload.get("disable_notification"), False):
+        options["disable_notification"] = True
+    markup, failure = parse_inline_keyboard(input_payload.get("buttons"))
+    if failure is not None:
+        return {}, failure
+    if markup is not None:
+        options["reply_markup"] = markup
+    return options, None
 
 
 def _test_mode(action: dict[str, Any], runtime_context: dict[str, Any]) -> bool:
@@ -102,6 +208,9 @@ def handle_send_message(
             "format_invalid",
             f"Format must be one of: {', '.join(FORMATS)}; got '{message_format}'.",
         )
+    send_options, options_failure = parse_send_options(input_payload)
+    if options_failure is not None:
+        return options_failure
     if _test_mode(action, runtime_context):
         # Test Run never sends: the step reports what it would have done.
         return (
@@ -150,6 +259,7 @@ def handle_send_message(
         message,
         parse_mode="HTML",
         disable_web_page_preview=disable_preview,
+        **send_options,
     )
     delivered = bool(response.get("ok"))
     message_id = response.get("message_id")
@@ -169,4 +279,11 @@ def handle_send_message(
     return result, 0 if delivered else 2
 
 
-__all__ = ["FORMATS", "TELEGRAM_MESSAGE_LIMIT", "handle_send_message"]
+__all__ = [
+    "FORMATS",
+    "TELEGRAM_MESSAGE_LIMIT",
+    "handle_send_message",
+    "parse_inline_keyboard",
+    "parse_send_options",
+    "positive_int",
+]

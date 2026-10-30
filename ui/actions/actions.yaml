@@ -24,6 +24,18 @@ actions:
   - name: disable_web_page_preview
     type: boolean
     required: false
+  - name: reply_to_message_id
+    type: integer
+    required: false
+    description: Send as a reply to this Telegram message ID.
+  - name: disable_notification
+    type: boolean
+    required: false
+    description: Deliver without a notification sound.
+  - name: buttons
+    type: array
+    required: false
+    description: 'Inline keyboard: a list of rows of buttons {text, url} or {text, callback_data}.'
   result_fields:
   - delivered
   - provider_message_id
@@ -31,6 +43,8 @@ actions:
   error_codes:
   - text_required
   - format_invalid
+  - reply_to_message_id_invalid
+  - keyboard_invalid
   - project_connection_required
   - no_notify_channel
   - channel_id_required
@@ -40,6 +54,7 @@ actions:
   - message_too_long
   - telegram_send_ambiguous
   - telegram_send_rejected
+  - telegram_reply_target_invalid
 - action_id: deliver_notification
   workflow_visible: false
   title: Deliver Notification
@@ -621,3 +636,296 @@ actions:
   - unauthorized_human_decision_channel
   - cross_project_human_decision
   - invalid_reject_comment_context
+- action_id: send_file
+  workflow_visible: true
+  title: Send File
+  description: Send a file from the workflow to one of this bot's Telegram channels as a photo, document, video, audio, voice message or animation. Photos up to 10 MB, other kinds up to 50 MB; a larger file is refused, never cut.
+  required_scopes:
+  - extension:invoke
+  - artifact:read
+  handler:
+    mode: extension
+  mutates_platform: false
+  parameters:
+  - name: channel_id
+    type: string
+    required: false
+    description: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+  - name: kind
+    type: string
+    required: true
+    description: 'How Telegram shows the file: photo, document, video, audio, voice or animation. A photo is limited to 10 MB, every other kind to 50 MB.'
+  - name: artifact_handle
+    type: artifact_handle
+    required: true
+    description: The file (an artifact) to send, for example one a Fetch File or Get Telegram file step produced.
+  - name: caption
+    type: string
+    required: false
+    description: Optional text under the file, at most 1024 characters.
+  - name: format
+    type: string
+    required: false
+    description: text sends the message as written; html reads Telegram's HTML tags (b, i, u, s, a, code, pre, blockquote).
+  - name: file_name
+    type: string
+    required: false
+    description: The name Telegram shows for the file. Defaults to the artifact's name.
+  - name: reply_to_message_id
+    type: integer
+    required: false
+    description: Send as a reply to this Telegram message ID. Leave empty for a normal message.
+  - name: disable_notification
+    type: boolean
+    required: false
+    description: Deliver without a notification sound.
+  result_fields:
+  - delivered
+  - provider_message_id
+  - channel_id
+  error_codes:
+  - kind_invalid
+  - artifact_required
+  - format_invalid
+  - caption_too_long
+  - reply_to_message_id_invalid
+  - project_connection_required
+  - no_notify_channel
+  - channel_id_required
+  - unknown_channel_id
+  - channel_disabled
+  - channel_missing_notify
+  - file_too_large
+  - artifact_read_failed
+  - artifact_empty
+  - telegram_file_too_large
+  - telegram_markup_invalid
+  - telegram_reply_target_invalid
+  - bot_token_or_chat_id_required
+  - telegram_send_ambiguous
+  - telegram_request_rejected
+  - telegram_rate_limited
+  - telegram_chat_not_found
+  - telegram_bot_not_in_chat
+  - telegram_not_enough_rights
+  - telegram_request_failed
+- action_id: edit_message
+  workflow_visible: true
+  title: Edit Message
+  description: Replace the text of a message the bot sent to one of its Telegram channels.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: extension
+  mutates_platform: false
+  parameters:
+  - name: channel_id
+    type: string
+    required: false
+    description: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+  - name: message_id
+    type: integer
+    required: true
+    description: The Telegram message ID, for example the provider_message_id a Send step returned.
+  - name: text
+    type: string
+    required: true
+    description: The text, at most 4096 characters.
+  - name: format
+    type: string
+    required: false
+    description: text sends the message as written; html reads Telegram's HTML tags (b, i, u, s, a, code, pre, blockquote).
+  - name: buttons
+    type: array
+    required: false
+    description: 'Inline keyboard: a list of rows, each a list of buttons {"text": "Open", "url": "https://..."} or {"text": "Go", "callback_data": "my_data"}. callback_data is at most 64 bytes and may not start with "tgx:".'
+  - name: disable_web_page_preview
+    type: boolean
+    required: false
+    description: Leave out the preview Telegram shows for the first link. Defaults to the connection setting.
+  result_fields:
+  - delivered
+  - provider_message_id
+  - channel_id
+  error_codes:
+  - message_id_required
+  - message_id_invalid
+  - text_required
+  - format_invalid
+  - keyboard_invalid
+  - message_too_long
+  - project_connection_required
+  - no_notify_channel
+  - channel_id_required
+  - unknown_channel_id
+  - channel_disabled
+  - channel_missing_notify
+  - telegram_message_not_found
+  - telegram_message_not_modified
+  - telegram_edit_not_allowed
+  - telegram_markup_invalid
+  - telegram_keyboard_rejected
+  - bot_token_or_chat_id_required
+  - telegram_send_ambiguous
+  - telegram_request_rejected
+  - telegram_rate_limited
+  - telegram_chat_not_found
+  - telegram_bot_not_in_chat
+  - telegram_not_enough_rights
+  - telegram_request_failed
+- action_id: delete_message
+  workflow_visible: true
+  title: Delete Message
+  description: Delete one message in a Telegram channel. Telegram deletes only messages younger than 48 hours; for an older message the step fails with telegram_delete_not_allowed.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: extension
+  mutates_platform: false
+  parameters:
+  - name: channel_id
+    type: string
+    required: false
+    description: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+  - name: message_id
+    type: integer
+    required: true
+    description: The Telegram message ID, for example the provider_message_id a Send step returned.
+  result_fields:
+  - delivered
+  - provider_message_id
+  - channel_id
+  error_codes:
+  - message_id_required
+  - message_id_invalid
+  - project_connection_required
+  - no_notify_channel
+  - channel_id_required
+  - unknown_channel_id
+  - channel_disabled
+  - channel_missing_notify
+  - telegram_delete_not_allowed
+  - telegram_message_not_found
+  - bot_token_or_chat_id_required
+  - telegram_send_ambiguous
+  - telegram_request_rejected
+  - telegram_rate_limited
+  - telegram_chat_not_found
+  - telegram_bot_not_in_chat
+  - telegram_not_enough_rights
+  - telegram_request_failed
+- action_id: pin_message
+  workflow_visible: true
+  title: Pin Message
+  description: Pin a message in a Telegram channel. In groups and channels the bot needs the right to pin messages.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: extension
+  mutates_platform: false
+  parameters:
+  - name: channel_id
+    type: string
+    required: false
+    description: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+  - name: message_id
+    type: integer
+    required: true
+    description: The Telegram message ID, for example the provider_message_id a Send step returned.
+  - name: disable_notification
+    type: boolean
+    required: false
+    description: Deliver without a notification sound.
+  result_fields:
+  - delivered
+  - provider_message_id
+  - channel_id
+  error_codes:
+  - message_id_required
+  - message_id_invalid
+  - project_connection_required
+  - no_notify_channel
+  - channel_id_required
+  - unknown_channel_id
+  - channel_disabled
+  - channel_missing_notify
+  - telegram_message_not_found
+  - bot_token_or_chat_id_required
+  - telegram_send_ambiguous
+  - telegram_request_rejected
+  - telegram_rate_limited
+  - telegram_chat_not_found
+  - telegram_bot_not_in_chat
+  - telegram_not_enough_rights
+  - telegram_request_failed
+- action_id: unpin_message
+  workflow_visible: true
+  title: Unpin Message
+  description: Unpin a message in a Telegram channel. Without a message ID Telegram unpins the most recently pinned message.
+  required_scopes:
+  - extension:invoke
+  handler:
+    mode: extension
+  mutates_platform: false
+  parameters:
+  - name: channel_id
+    type: string
+    required: false
+    description: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+  - name: message_id
+    type: integer
+    required: false
+    description: The Telegram message ID, for example the provider_message_id a Send step returned.
+  result_fields:
+  - delivered
+  - provider_message_id
+  - channel_id
+  error_codes:
+  - message_id_invalid
+  - project_connection_required
+  - no_notify_channel
+  - channel_id_required
+  - unknown_channel_id
+  - channel_disabled
+  - channel_missing_notify
+  - telegram_message_not_found
+  - bot_token_or_chat_id_required
+  - telegram_send_ambiguous
+  - telegram_request_rejected
+  - telegram_rate_limited
+  - telegram_chat_not_found
+  - telegram_bot_not_in_chat
+  - telegram_not_enough_rights
+  - telegram_request_failed
+- action_id: get_file
+  workflow_visible: true
+  title: Get Telegram File
+  description: Download a file the bot can see, by its Telegram file_id, into a workflow artifact. Telegram serves files up to 20 MB and keeps the download link valid for about an hour; the step downloads at once. A larger file is refused, never cut.
+  required_scopes:
+  - extension:invoke
+  - artifact:write
+  handler:
+    mode: extension
+  mutates_platform: false
+  parameters:
+  - name: file_id
+    type: string
+    required: true
+    description: The file_id of a file the bot can see, for example the file_id of a New Telegram message trigger. Telegram serves files up to 20 MB.
+  result_fields:
+  - artifact_handle
+  - artifact_filename
+  - size_bytes
+  - sha256
+  error_codes:
+  - file_id_required
+  - project_connection_required
+  - bot_token_or_chat_id_required
+  - file_too_large
+  - telegram_file_not_found
+  - telegram_download_failed
+  - artifact_write_failed
+  - telegram_request_rejected
+  - telegram_rate_limited
+  - telegram_send_ambiguous
+  - telegram_request_failed

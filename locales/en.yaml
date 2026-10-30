@@ -114,7 +114,7 @@ component.discovered_chats_grid.empty_state: No discovered chats yet
 component.discovered_chats_grid.empty_state_description: Resolve a public chat or add the bot to a target chat and refresh discovery.
 component.channels_form.title: Channels
 component.channels_form.field.channels.label: Telegram Channels
-component.channels_form.field.channels.help: Add named project-scoped channels for notifications and human decisions.
+component.channels_form.field.channels.help: Add named project-scoped channels for notifications, human decisions and workflow triggers.
 component.channels_form.field.channels.field.channel_id.label: Channel ID
 component.channels_form.field.channels.field.channel_id.placeholder: ops_alerts
 component.channels_form.field.channels.field.display_name.label: Display Name
@@ -124,6 +124,7 @@ component.channels_form.field.channels.field.chat_id.placeholder: '-100123456789
 component.channels_form.field.channels.field.enabled.label: Enabled
 component.channels_form.field.channels.field.capabilities.notify.label: Notify Capability
 component.channels_form.field.channels.field.capabilities.human_decision.label: Human Decision Capability
+component.channels_form.field.channels.field.capabilities.workflow_trigger.label: Workflow Trigger Capability
 component.channels_form.section.channels.title: Channels
 component.channels_form.save_label: Save channels
 component.channel_test_grid.title: Test a Channel
@@ -208,3 +209,166 @@ step.send_message.field.text.label: Message
 step.send_message.field.text.help_text: At most 4096 characters. Map a Template step's result to send composed text.
 step.send_message.field.format.label: Format
 step.send_message.field.disable_web_page_preview.label: No link preview
+
+# Telegram workflow steps beyond Send Message
+op.send_file.display_name: Send File
+op.send_file.description: Send a file from the workflow to one of this bot's Telegram channels as a photo, document, video, audio, voice message or animation. Photos up to 10 MB, other kinds up to 50 MB; a larger file is refused, never cut.
+op.send_file.input.channel_id.display_name: Channel ID
+op.send_file.input.channel_id.description: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+op.send_file.input.kind.display_name: Kind
+op.send_file.input.kind.description: 'How Telegram shows the file: photo, document, video, audio, voice or animation. A photo is limited to 10 MB, every other kind to 50 MB.'
+op.send_file.input.artifact_handle.display_name: File
+op.send_file.input.artifact_handle.description: The file (an artifact) to send, for example one a Fetch File or Get Telegram file step produced.
+op.send_file.input.caption.display_name: Caption
+op.send_file.input.caption.description: Optional text under the file, at most 1024 characters.
+op.send_file.input.format.display_name: Format
+op.send_file.input.format.description: text sends the message as written; html reads Telegram's HTML tags (b, i, u, s, a, code, pre, blockquote).
+op.send_file.input.file_name.display_name: File name
+op.send_file.input.file_name.description: The name Telegram shows for the file. Defaults to the artifact's name.
+op.send_file.input.reply_to_message_id.display_name: Reply to message ID
+op.send_file.input.reply_to_message_id.description: Send as a reply to this Telegram message ID. Leave empty for a normal message.
+op.send_file.input.disable_notification.display_name: Silent
+op.send_file.input.disable_notification.description: Deliver without a notification sound.
+op.send_file.output.delivered.display_name: Delivered
+op.send_file.output.delivered.description: Whether Telegram accepted the request.
+op.send_file.output.provider_message_id.display_name: Telegram message ID
+op.send_file.output.provider_message_id.description: The ID of the message the step sent or acted on.
+op.send_file.output.channel_id.display_name: Channel ID
+op.send_file.output.channel_id.description: The channel the step used.
+step.send_file.section: Send Telegram file
+step.send_file.field.channel_id.label: Channel ID
+step.send_file.field.channel_id.help_text: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+step.send_file.field.channel_id.placeholder: ops-alerts
+step.send_file.field.kind.label: Kind
+step.send_file.field.kind.help_text: 'How Telegram shows the file: photo, document, video, audio, voice or animation. A photo is limited to 10 MB, every other kind to 50 MB.'
+step.send_file.field.artifact_handle.label: File
+step.send_file.field.artifact_handle.help_text: The file (an artifact) to send, for example one a Fetch File or Get Telegram file step produced.
+step.send_file.field.caption.label: Caption
+step.send_file.field.caption.help_text: Optional text under the file, at most 1024 characters.
+step.send_file.field.format.label: Format
+step.send_file.field.format.help_text: text sends the message as written; html reads Telegram's HTML tags (b, i, u, s, a, code, pre, blockquote).
+step.send_file.field.file_name.label: File name
+step.send_file.field.file_name.help_text: The name Telegram shows for the file. Defaults to the artifact's name.
+step.send_file.field.reply_to_message_id.label: Reply to message ID
+step.send_file.field.reply_to_message_id.help_text: Send as a reply to this Telegram message ID. Leave empty for a normal message.
+step.send_file.field.disable_notification.label: Silent
+step.send_file.field.disable_notification.help_text: Deliver without a notification sound.
+op.edit_message.display_name: Edit Message
+op.edit_message.description: Replace the text of a message the bot sent to one of its Telegram channels.
+op.edit_message.input.channel_id.display_name: Channel ID
+op.edit_message.input.channel_id.description: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+op.edit_message.input.message_id.display_name: Message ID
+op.edit_message.input.message_id.description: The Telegram message ID, for example the provider_message_id a Send step returned.
+op.edit_message.input.text.display_name: Message
+op.edit_message.input.text.description: The text, at most 4096 characters.
+op.edit_message.input.format.display_name: Format
+op.edit_message.input.format.description: text sends the message as written; html reads Telegram's HTML tags (b, i, u, s, a, code, pre, blockquote).
+op.edit_message.input.buttons.display_name: Buttons
+op.edit_message.input.buttons.description: 'Inline keyboard: a list of rows, each a list of buttons {"text": "Open", "url": "https://..."} or {"text": "Go", "callback_data": "my_data"}. callback_data is at most 64 bytes and may not start with "tgx:".'
+op.edit_message.input.disable_web_page_preview.display_name: No link preview
+op.edit_message.input.disable_web_page_preview.description: Leave out the preview Telegram shows for the first link. Defaults to the connection setting.
+op.edit_message.output.delivered.display_name: Delivered
+op.edit_message.output.delivered.description: Whether Telegram accepted the request.
+op.edit_message.output.provider_message_id.display_name: Telegram message ID
+op.edit_message.output.provider_message_id.description: The ID of the message the step sent or acted on.
+op.edit_message.output.channel_id.display_name: Channel ID
+op.edit_message.output.channel_id.description: The channel the step used.
+step.edit_message.section: Edit Telegram message
+step.edit_message.field.channel_id.label: Channel ID
+step.edit_message.field.channel_id.help_text: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+step.edit_message.field.channel_id.placeholder: ops-alerts
+step.edit_message.field.message_id.label: Message ID
+step.edit_message.field.message_id.help_text: The Telegram message ID, for example the provider_message_id a Send step returned.
+step.edit_message.field.text.label: Message
+step.edit_message.field.text.help_text: The text, at most 4096 characters.
+step.edit_message.field.format.label: Format
+step.edit_message.field.format.help_text: text sends the message as written; html reads Telegram's HTML tags (b, i, u, s, a, code, pre, blockquote).
+step.edit_message.field.buttons.label: Buttons
+step.edit_message.field.buttons.help_text: 'Inline keyboard: a list of rows, each a list of buttons {"text": "Open", "url": "https://..."} or {"text": "Go", "callback_data": "my_data"}. callback_data is at most 64 bytes and may not start with "tgx:".'
+step.edit_message.field.disable_web_page_preview.label: No link preview
+step.edit_message.field.disable_web_page_preview.help_text: Leave out the preview Telegram shows for the first link. Defaults to the connection setting.
+op.delete_message.display_name: Delete Message
+op.delete_message.description: Delete one message in a Telegram channel. Telegram deletes only messages younger than 48 hours; for an older message the step fails with telegram_delete_not_allowed.
+op.delete_message.input.channel_id.display_name: Channel ID
+op.delete_message.input.channel_id.description: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+op.delete_message.input.message_id.display_name: Message ID
+op.delete_message.input.message_id.description: The Telegram message ID, for example the provider_message_id a Send step returned.
+op.delete_message.output.delivered.display_name: Delivered
+op.delete_message.output.delivered.description: Whether Telegram accepted the request.
+op.delete_message.output.provider_message_id.display_name: Telegram message ID
+op.delete_message.output.provider_message_id.description: The ID of the message the step sent or acted on.
+op.delete_message.output.channel_id.display_name: Channel ID
+op.delete_message.output.channel_id.description: The channel the step used.
+step.delete_message.section: Delete Telegram message
+step.delete_message.field.channel_id.label: Channel ID
+step.delete_message.field.channel_id.help_text: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+step.delete_message.field.channel_id.placeholder: ops-alerts
+step.delete_message.field.message_id.label: Message ID
+step.delete_message.field.message_id.help_text: The Telegram message ID, for example the provider_message_id a Send step returned.
+op.pin_message.display_name: Pin Message
+op.pin_message.description: Pin a message in a Telegram channel. In groups and channels the bot needs the right to pin messages.
+op.pin_message.input.channel_id.display_name: Channel ID
+op.pin_message.input.channel_id.description: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+op.pin_message.input.message_id.display_name: Message ID
+op.pin_message.input.message_id.description: The Telegram message ID, for example the provider_message_id a Send step returned.
+op.pin_message.input.disable_notification.display_name: Silent
+op.pin_message.input.disable_notification.description: Deliver without a notification sound.
+op.pin_message.output.delivered.display_name: Delivered
+op.pin_message.output.delivered.description: Whether Telegram accepted the request.
+op.pin_message.output.provider_message_id.display_name: Telegram message ID
+op.pin_message.output.provider_message_id.description: The ID of the message the step sent or acted on.
+op.pin_message.output.channel_id.display_name: Channel ID
+op.pin_message.output.channel_id.description: The channel the step used.
+step.pin_message.section: Pin Telegram message
+step.pin_message.field.channel_id.label: Channel ID
+step.pin_message.field.channel_id.help_text: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+step.pin_message.field.channel_id.placeholder: ops-alerts
+step.pin_message.field.message_id.label: Message ID
+step.pin_message.field.message_id.help_text: The Telegram message ID, for example the provider_message_id a Send step returned.
+step.pin_message.field.disable_notification.label: Silent
+step.pin_message.field.disable_notification.help_text: Deliver without a notification sound.
+op.unpin_message.display_name: Unpin Message
+op.unpin_message.description: Unpin a message in a Telegram channel. Without a message ID Telegram unpins the most recently pinned message.
+op.unpin_message.input.channel_id.display_name: Channel ID
+op.unpin_message.input.channel_id.description: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+op.unpin_message.input.message_id.display_name: Message ID
+op.unpin_message.input.message_id.description: The Telegram message ID, for example the provider_message_id a Send step returned.
+op.unpin_message.output.delivered.display_name: Delivered
+op.unpin_message.output.delivered.description: Whether Telegram accepted the request.
+op.unpin_message.output.provider_message_id.display_name: Telegram message ID
+op.unpin_message.output.provider_message_id.description: The ID of the message the step sent or acted on.
+op.unpin_message.output.channel_id.display_name: Channel ID
+op.unpin_message.output.channel_id.description: The channel the step used.
+step.unpin_message.section: Unpin Telegram message
+step.unpin_message.field.channel_id.label: Channel ID
+step.unpin_message.field.channel_id.help_text: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+step.unpin_message.field.channel_id.placeholder: ops-alerts
+step.unpin_message.field.message_id.label: Message ID
+step.unpin_message.field.message_id.help_text: The Telegram message ID, for example the provider_message_id a Send step returned.
+op.get_file.display_name: Get Telegram File
+op.get_file.description: Download a file the bot can see, by its Telegram file_id, into a workflow artifact. Telegram serves files up to 20 MB and keeps the download link valid for about an hour; the step downloads at once. A larger file is refused, never cut.
+op.get_file.input.file_id.display_name: Telegram file ID
+op.get_file.input.file_id.description: The file_id of a file the bot can see, for example the file_id of a New Telegram message trigger. Telegram serves files up to 20 MB.
+op.get_file.output.artifact_handle.display_name: File
+op.get_file.output.artifact_handle.description: The downloaded file as a workflow artifact.
+op.get_file.output.artifact_filename.display_name: File name
+op.get_file.output.artifact_filename.description: The file's name as Telegram stores it.
+op.get_file.output.size_bytes.display_name: Size in bytes
+op.get_file.output.size_bytes.description: The size of the downloaded file.
+op.get_file.output.sha256.display_name: SHA-256
+op.get_file.output.sha256.description: The checksum of the downloaded file.
+step.get_file.section: Get Telegram file
+step.get_file.field.file_id.label: Telegram file ID
+step.get_file.field.file_id.help_text: The file_id of a file the bot can see, for example the file_id of a New Telegram message trigger. Telegram serves files up to 20 MB.
+op.send_message.input.reply_to_message_id.display_name: Reply to message ID
+op.send_message.input.reply_to_message_id.description: Send as a reply to this Telegram message ID. Leave empty for a normal message.
+step.send_message.field.reply_to_message_id.label: Reply to message ID
+step.send_message.field.reply_to_message_id.help_text: Send as a reply to this Telegram message ID. Leave empty for a normal message.
+op.send_message.input.disable_notification.display_name: Silent
+op.send_message.input.disable_notification.description: Deliver without a notification sound.
+step.send_message.field.disable_notification.label: Silent
+step.send_message.field.disable_notification.help_text: Deliver without a notification sound.
+op.send_message.input.buttons.display_name: Buttons
+op.send_message.input.buttons.description: 'Inline keyboard: a list of rows, each a list of buttons {"text": "Open", "url": "https://..."} or {"text": "Go", "callback_data": "my_data"}. callback_data is at most 64 bytes and may not start with "tgx:".'
+step.send_message.field.buttons.label: Buttons
+step.send_message.field.buttons.help_text: 'Inline keyboard: a list of rows, each a list of buttons {"text": "Open", "url": "https://..."} or {"text": "Go", "callback_data": "my_data"}. callback_data is at most 64 bytes and may not start with "tgx:".'

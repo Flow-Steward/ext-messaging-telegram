@@ -30,6 +30,102 @@ from main_transport import (
 
 _MESSAGE_THE_APPROVAL_CONTEXT_COULD_NOT_BE_RESOLVED = "The approval context could not be resolved."
 
+MESSAGE_RECEIVED_EVENT = "telegram.message.received"
+_FILE_KINDS = ("photo", "document", "video", "audio", "voice", "animation", "sticker")
+
+
+def _workflow_trigger_channel_for_chat(
+    provider_runtime: dict[str, Any],
+    chat_id: int | None,
+) -> dict[str, Any]:
+    """The enabled channel of this chat that may start workflows, else ``{}``.
+
+    Closed by default: a chat that is not a saved channel, a disabled channel and
+    a channel without ``capabilities.workflow_trigger`` all start nothing.
+    """
+    if chat_id is None:
+        return {}
+    normalized_chat_id = _as_str(chat_id)
+    for raw_channel in _as_list(provider_runtime.get("channels")):
+        channel = _as_dict(raw_channel)
+        if _as_str(channel.get("chat_id")) != normalized_chat_id:
+            continue
+        if not _coerce_bool(channel.get("enabled"), True):
+            continue
+        if _coerce_bool(_as_dict(channel.get("capabilities")).get("workflow_trigger"), False):
+            return channel
+    return {}
+
+
+def _message_file(message: dict[str, Any]) -> tuple[str, str, str]:
+    """``(kind, file_id, file_name)`` of the file a message carries, or empty strings.
+
+    Only metadata: the file is never downloaded here. A Telegram animation also
+    carries a ``document`` copy, so it is looked at before the document.
+    """
+    for kind in ("animation", "document", "video", "audio", "voice", "sticker"):
+        item = _as_dict(message.get(kind))
+        file_id = _as_str(item.get("file_id"))
+        if file_id:
+            return kind, file_id, _as_str(item.get("file_name"))
+    sizes = [_as_dict(item) for item in _as_list(message.get("photo"))]
+    sizes = [item for item in sizes if _as_str(item.get("file_id"))]
+    if sizes:
+        # Telegram lists the sizes of one photo smallest first.
+        return "photo", _as_str(sizes[-1].get("file_id")), ""
+    return "", "", ""
+
+
+def _message_received_event(
+    update: dict[str, Any],
+    message: dict[str, Any],
+    *,
+    project_id: str | None,
+    connection_id: str,
+) -> dict[str, Any]:
+    chat = _as_dict(message.get("chat"))
+    sender = _as_dict(message.get("from"))
+    chat_id = _as_str(chat.get("id"))
+    message_id = _coerce_int(message.get("message_id")) or 0
+    update_id = _coerce_int(update.get("update_id"))
+    file_kind, file_id, file_name = _message_file(message)
+    username = _as_str(sender.get("username"))
+    user_id = _as_str(sender.get("id"))
+    payload: dict[str, Any] = {
+        "chat_id": chat_id,
+        "user_id": user_id,
+        "message_id": message_id,
+        "text": _as_str(message.get("text")),
+        "username": username,
+        "chat_type": _as_str(chat.get("type")),
+        "date": _coerce_int(message.get("date")) or 0,
+        "has_file": bool(file_id),
+        "file_id": file_id,
+        "file_kind": file_kind,
+        "file_name": file_name,
+        "caption": _as_str(message.get("caption")),
+        "reply_to_message_id": _coerce_int(
+            _as_dict(message.get("reply_to_message")).get("message_id")
+        )
+        or 0,
+        "update_id": update_id if update_id is not None else 0,
+    }
+    if connection_id:
+        payload["connection_id"] = connection_id
+    sender_label = f"@{username}" if username else (f"user {user_id}" if user_id else "someone")
+    event: dict[str, Any] = {
+        "event_type": MESSAGE_RECEIVED_EVENT,
+        "severity": "info",
+        "summary": f"Telegram message from {sender_label} in chat {chat_id}",
+        # Stable per update, so a Telegram retry never starts a second run.
+        "correlation_id": (str(update_id) if update_id is not None else f"{chat_id}:{message_id}"),
+        "source": "telegram.message",
+        "payload": payload,
+    }
+    if project_id:
+        event["project_id"] = project_id
+    return event
+
 
 def _ingress_interaction_payload(
     *,
@@ -489,6 +585,27 @@ def _ingress_event_response(
                     "events": [],
                 }
         if not parsed_command:
+            message_runtime = _provider_runtime_config(provider)
+            if _workflow_trigger_channel_for_chat(
+                message_runtime, _coerce_int(_as_dict(message.get("chat")).get("id"))
+            ):
+                event = _message_received_event(
+                    payload,
+                    message,
+                    project_id=project_id_hint,
+                    connection_id=_as_str(
+                        callback_info.get("connection_id") or provider.get("connection_id")
+                    ),
+                )
+                return {
+                    "ok": True,
+                    "result": {
+                        "provider": "telegram",
+                        "ingress_type": "message",
+                        "event_type": MESSAGE_RECEIVED_EVENT,
+                    },
+                    "events": [event],
+                }
             return {
                 "ok": True,
                 "result": {
@@ -688,6 +805,7 @@ def _handle_ingress_event_payload(action_payload: dict[str, Any]) -> tuple[dict,
                 **provider,
                 "provider_config": connection_config or _as_dict(provider.get("provider_config")),
                 "provider_secrets": provider_secrets,
+                "connection_id": _as_str(project_connection.get("connection_id")),
                 "project_id": _coerce_project_id(
                     project_connection.get("project_id"),
                     provider.get("project_id"),

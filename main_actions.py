@@ -35,6 +35,14 @@ from main_state import (
     _upsert_discovered_chat,
     _webhook_projection,
 )
+from main_steps import (
+    handle_delete_message,
+    handle_edit_message,
+    handle_get_file,
+    handle_pin_message,
+    handle_send_file,
+    handle_unpin_message,
+)
 from main_transport import (
     _retry_error_message,
     _retryable_delivery_status,
@@ -43,6 +51,17 @@ from main_transport import (
     _telegram_get_me,
     _telegram_token_for_project,
 )
+
+
+# Workflow steps beyond send_message; each gets everything it needs in the action.
+_STEP_HANDLERS = {
+    "send_file": handle_send_file,
+    "edit_message": handle_edit_message,
+    "delete_message": handle_delete_message,
+    "pin_message": handle_pin_message,
+    "unpin_message": handle_unpin_message,
+    "get_file": handle_get_file,
+}
 
 
 def _handle_action(action: dict) -> tuple[dict, int]:
@@ -61,6 +80,9 @@ def _handle_action(action: dict) -> tuple[dict, int]:
     if action_id == "send_message":
         # A workflow step: everything it needs travels with the action.
         return handle_send_message(action, runtime_context)
+    step_handler = _STEP_HANDLERS.get(action_id)
+    if step_handler is not None:
+        return step_handler(action, runtime_context)
     bl = _resolve_runtime_logger(runtime_context)
     connection = (
         _telegram_connection_row_for_project(bl, str(project_id))
@@ -385,7 +407,11 @@ def _handle_action(action: dict) -> tuple[dict, int]:
             "display_name": title,
             "chat_id": selected_chat_id,
             "enabled": True,
-            "capabilities": {"notify": True, "human_decision": False},
+            "capabilities": {
+                "notify": True,
+                "human_decision": False,
+                "workflow_trigger": False,
+            },
         }
         next_channels = [*channels, new_channel]
         next_config = _replace_channels_in_config(config, next_channels)

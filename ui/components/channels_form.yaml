@@ -19,7 +19,7 @@ ui_schema:
     widget: repeater
     section_id: channels
     label: Telegram Channels
-    help: Add named project-scoped channels for notifications and human decisions.
+    help: Add named project-scoped channels for notifications, human decisions and workflow triggers.
     props:
       fields:
       - field_id: channel_id
@@ -57,6 +57,11 @@ ui_schema:
         path: capabilities.human_decision
         widget: boolean
         label: Human Decision Capability
+        default: false
+      - field_id: workflow_trigger
+        path: capabilities.workflow_trigger
+        widget: boolean
+        label: Workflow Trigger Capability
         default: false
   actions:
     save_label: Save channels

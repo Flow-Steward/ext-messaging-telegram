@@ -2,7 +2,7 @@ manifest_version: 2
 lifecycle: {data_schema_version: 1, data_migrations: []}
 extension_id: flowsteward.telegram
 kind: notification_provider
-version: 1.2.1
+version: 1.3.0
 display_name: Telegram Notifications
 description: Sends Flow Steward notifications to Telegram chats via the Bot API. Canonical
   reference integration for notification providers.
@@ -30,11 +30,47 @@ event_subscriptions:
 - {event_type: notification.delivery.failed, severity: any, conditions: {}}
 - {event_type: notification.interaction_received, severity: any, conditions: {}}
 - {event_type: external.comment.received, severity: any, conditions: {}}
+- {event_type: telegram.message.received, severity: any, conditions: {}}
+workflow_triggers:
+- trigger_type_id: message_received
+  provider_key: flowsteward.telegram
+  display_name: New Telegram message
+  description: Starts the workflow when someone sends a message to a chat of this bot
+    that is enabled for workflow triggers on the Chats & Channels page. The workflow
+    receives the message metadata and, for a file, its Telegram file_id; the file
+    itself is not downloaded.
+  event_name: telegram.message.received
+  config_schema:
+    type: object
+    additionalProperties: false
+    properties:
+      chat_id:
+        type: string
+        title: Chat ID
+      user_id:
+        type: string
+        title: Sender user ID
+  ui_schema:
+    fields:
+    - name: chat_id
+      label: Chat ID
+      widget_type: text
+      required: false
+      placeholder: '-1001234567890'
+      help_text: Start only for messages in this chat. Leave empty to accept every chat that is allowed to trigger workflows.
+    - name: user_id
+      label: Sender user ID
+      widget_type: text
+      required: false
+      placeholder: '123456789'
+      help_text: Start only for messages from this Telegram user. Leave empty to accept every sender in the allowed chats.
 required_scopes:
 - event:subscribe
 - notify:dispatch
 - extension:invoke
 - read:events
+- artifact:read
+- artifact:write
 schemas:
   config: schemas/config.schema.yaml
   secrets: schemas/secrets.schema.yaml
@@ -69,6 +105,8 @@ machine_auth:
   required_scopes:
   - event:subscribe
   - notify:dispatch
+  - artifact:read
+  - artifact:write
 account_scope:
   scope_type: project
   description: Telegram binding is per-project; each project configures provider
@@ -93,6 +131,62 @@ external_effects:
     account_max: 60
     project_max: 30
     connection_max: 20
+- operation_id: send_file
+  effect_kind: message_delivery
+  channel: telegram
+  idempotency: required
+  test_mode_behavior: suppress
+  observability:
+    target_fields:
+    - channel_id
+    target_kind: channel
+    target_label: Telegram channel
+  rate_limit:
+    window_seconds: 60
+    account_max: 60
+    project_max: 30
+    connection_max: 20
+- operation_id: edit_message
+  effect_kind: message_delivery
+  channel: telegram
+  idempotency: required
+  test_mode_behavior: suppress
+  observability:
+    target_fields:
+    - channel_id
+    target_kind: channel
+    target_label: Telegram channel
+- operation_id: delete_message
+  effect_kind: message_delivery
+  channel: telegram
+  idempotency: required
+  test_mode_behavior: suppress
+  observability:
+    target_fields:
+    - channel_id
+    target_kind: channel
+    target_label: Telegram channel
+- operation_id: pin_message
+  effect_kind: message_delivery
+  channel: telegram
+  idempotency: required
+  test_mode_behavior: suppress
+  observability:
+    target_fields:
+    - channel_id
+    target_kind: channel
+    target_label: Telegram channel
+- operation_id: unpin_message
+  effect_kind: message_delivery
+  channel: telegram
+  idempotency: required
+  test_mode_behavior: suppress
+  observability:
+    target_fields:
+    - channel_id
+    target_kind: channel
+    target_label: Telegram channel
+
 - operation_id: deliver_notification
   effect_kind: message_delivery
   channel: telegram
@@ -119,6 +213,24 @@ runtime:
     connection_types: contracts/connection_types.yaml
     operation_manifest: contracts/operation_manifest.yaml
     step_ui_manifest: contracts/step_ui_manifest.yaml
+    artifact_policies: contracts/artifact_policies.yaml
+artifact_policies:
+- operation_id: send_file
+  inputs:
+  - kind: artifact
+    value_type: artifact_handle
+    binding_key: source_artifact
+    field: artifact_handle
+    required: true
+    max_size_bytes: 52428800
+- operation_id: get_file
+  outputs:
+  - kind: artifact
+    binding_key: downloaded_file
+    filename: telegram_file.bin
+    content_type: application/octet-stream
+    max_size_bytes: 20971520
+    retention_class: run_window
 entrypoint:
   mode: subprocess
   command:

@@ -632,6 +632,12 @@ def _channel_items_from_config(config: dict[str, Any]) -> list[dict[str, Any]]:
                         capabilities.get("human_decision"),
                         False,
                     ),
+                    # Closed by default: only a chat the owner switched on may
+                    # start workflows with its incoming messages.
+                    "workflow_trigger": _coerce_bool(
+                        capabilities.get("workflow_trigger"),
+                        False,
+                    ),
                 },
             }
         )

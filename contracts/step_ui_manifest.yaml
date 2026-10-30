@@ -12,3 +12,162 @@ forms:
           - {label: Plain text, value: text}
           - {label: Telegram HTML, value: html}
       - {name: disable_web_page_preview, label: No link preview, widget_type: boolean, required: false}
+      - {name: reply_to_message_id, label: Reply to message ID, widget_type: number, required: false, help_text: Send as a reply to this Telegram message ID. Leave empty for a normal message.}
+      - {name: disable_notification, label: Silent, widget_type: boolean, required: false, help_text: Deliver without a notification sound.}
+      - {name: buttons, label: Buttons, widget_type: json, required: false, help_text: 'Inline keyboard: a list of rows, each a list of buttons {"text": "Open", "url": "https://..."} or {"text": "Go", "callback_data": "my_data"}. callback_data is at most 64 bytes and may not start with "tgx:".'}
+  - operation_id: send_file
+    title: Send Telegram file
+    fields:
+    - name: channel_id
+      label: Channel ID
+      widget_type: text
+      required: false
+      help_text: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+      placeholder: ops-alerts
+    - name: kind
+      label: Kind
+      widget_type: select
+      required: true
+      help_text: 'How Telegram shows the file: photo, document, video, audio, voice or animation. A photo is limited to 10 MB, every other kind to 50 MB.'
+      options:
+      - label: Photo
+        value: photo
+      - label: Document
+        value: document
+      - label: Video
+        value: video
+      - label: Audio
+        value: audio
+      - label: Voice message
+        value: voice
+      - label: Animation (GIF)
+        value: animation
+    - name: artifact_handle
+      label: File
+      widget_type: artifact_picker
+      required: true
+      help_text: The file (an artifact) to send, for example one a Fetch File or Get Telegram file step produced.
+    - name: caption
+      label: Caption
+      widget_type: textarea
+      required: false
+      help_text: Optional text under the file, at most 1024 characters.
+    - name: format
+      label: Format
+      widget_type: select
+      required: false
+      help_text: text sends the message as written; html reads Telegram's HTML tags (b, i, u, s, a, code, pre, blockquote).
+      options:
+      - label: Plain text
+        value: text
+      - label: Telegram HTML
+        value: html
+    - name: file_name
+      label: File name
+      widget_type: text
+      required: false
+      help_text: The name Telegram shows for the file. Defaults to the artifact's name.
+    - name: reply_to_message_id
+      label: Reply to message ID
+      widget_type: number
+      required: false
+      help_text: Send as a reply to this Telegram message ID. Leave empty for a normal message.
+    - name: disable_notification
+      label: Silent
+      widget_type: boolean
+      required: false
+      help_text: Deliver without a notification sound.
+  - operation_id: edit_message
+    title: Edit Telegram message
+    fields:
+    - name: channel_id
+      label: Channel ID
+      widget_type: text
+      required: false
+      help_text: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+      placeholder: ops-alerts
+    - name: message_id
+      label: Message ID
+      widget_type: number
+      required: true
+      help_text: The Telegram message ID, for example the provider_message_id a Send step returned.
+    - name: text
+      label: Message
+      widget_type: textarea
+      required: true
+      help_text: The text, at most 4096 characters.
+    - name: format
+      label: Format
+      widget_type: select
+      required: false
+      help_text: text sends the message as written; html reads Telegram's HTML tags (b, i, u, s, a, code, pre, blockquote).
+      options:
+      - label: Plain text
+        value: text
+      - label: Telegram HTML
+        value: html
+    - name: buttons
+      label: Buttons
+      widget_type: json
+      required: false
+      help_text: 'Inline keyboard: a list of rows, each a list of buttons {"text": "Open", "url": "https://..."} or {"text": "Go", "callback_data": "my_data"}. callback_data is at most 64 bytes and may not start with "tgx:".'
+    - name: disable_web_page_preview
+      label: No link preview
+      widget_type: boolean
+      required: false
+      help_text: Leave out the preview Telegram shows for the first link. Defaults to the connection setting.
+  - operation_id: delete_message
+    title: Delete Telegram message
+    fields:
+    - name: channel_id
+      label: Channel ID
+      widget_type: text
+      required: false
+      help_text: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+      placeholder: ops-alerts
+    - name: message_id
+      label: Message ID
+      widget_type: number
+      required: true
+      help_text: The Telegram message ID, for example the provider_message_id a Send step returned.
+  - operation_id: pin_message
+    title: Pin Telegram message
+    fields:
+    - name: channel_id
+      label: Channel ID
+      widget_type: text
+      required: false
+      help_text: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+      placeholder: ops-alerts
+    - name: message_id
+      label: Message ID
+      widget_type: number
+      required: true
+      help_text: The Telegram message ID, for example the provider_message_id a Send step returned.
+    - name: disable_notification
+      label: Silent
+      widget_type: boolean
+      required: false
+      help_text: Deliver without a notification sound.
+  - operation_id: unpin_message
+    title: Unpin Telegram message
+    fields:
+    - name: channel_id
+      label: Channel ID
+      widget_type: text
+      required: false
+      help_text: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+      placeholder: ops-alerts
+    - name: message_id
+      label: Message ID
+      widget_type: number
+      required: false
+      help_text: The Telegram message ID, for example the provider_message_id a Send step returned.
+  - operation_id: get_file
+    title: Get Telegram file
+    fields:
+    - name: file_id
+      label: Telegram file ID
+      widget_type: text
+      required: true
+      help_text: The file_id of a file the bot can see, for example the file_id of a New Telegram message trigger. Telegram serves files up to 20 MB.

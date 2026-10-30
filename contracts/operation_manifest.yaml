@@ -28,6 +28,31 @@ operations:
         required: false
         display_name: No link preview
         description: Leave out the preview Telegram shows for the first link. Defaults to the connection setting.
+      - name: reply_to_message_id
+        value_type: integer
+        required: false
+        display_name: Reply to message ID
+        description: Send as a reply to this Telegram message ID. Leave empty for a normal message.
+      - name: disable_notification
+        value_type: boolean
+        required: false
+        display_name: Silent
+        description: Deliver without a notification sound.
+      - name: buttons
+        value_type: array
+        required: false
+        display_name: Buttons
+        description: 'Inline keyboard: a list of rows, each a list of buttons {"text": "Open", "url": "https://..."} or {"text": "Go", "callback_data": "my_data"}. callback_data is at most 64 bytes and may not start with "tgx:".'
+        schema:
+          type: array
+          items:
+            type: array
+            items:
+              type: object
+              properties:
+                text: {type: string}
+                url: {type: string}
+                callback_data: {type: string}
     outputs:
       - {name: delivered, value_type: boolean, display_name: Delivered, description: Whether Telegram accepted the message.}
       - {name: provider_message_id, value_type: text, display_name: Telegram message ID, description: The message ID Telegram returned.}
@@ -47,10 +72,13 @@ operations:
       - channel_disabled
       - channel_missing_notify
       - message_too_long
+      - reply_to_message_id_invalid
+      - keyboard_invalid
       - bot_token_or_chat_id_required
       - telegram_send_ambiguous
       - telegram_send_rejected
       - telegram_send_request_invalid
+      - telegram_reply_target_invalid
   - operation_id: deliver_notification
     display_name: Deliver Notification
     description: Internal notification-provider delivery contract.
@@ -63,3 +91,433 @@ operations:
     outputs:
       - {name: delivered, value_type: boolean}
       - {name: provider_message_id, value_type: text}
+  - operation_id: send_file
+    display_name: Send File
+    description: Send a file from the workflow to one of this bot's Telegram channels as a photo, document, video, audio, voice message or animation. Photos up to 10 MB, other kinds up to 50 MB; a larger file is refused, never cut.
+    operation_kind: action
+    category: notification
+    connection_type_ids:
+    - telegram_bot
+    workflow_visible: true
+    inputs:
+    - name: connection_ref
+      value_type: connection_ref
+      required: true
+    - name: channel_id
+      value_type: text
+      required: false
+      display_name: Channel ID
+      description: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+    - name: kind
+      value_type: text
+      required: true
+      display_name: Kind
+      description: 'How Telegram shows the file: photo, document, video, audio, voice or animation. A photo is limited to 10 MB, every other kind to 50 MB.'
+    - name: artifact_handle
+      value_type: artifact_handle
+      required: true
+      display_name: File
+      description: The file (an artifact) to send, for example one a Fetch File or Get Telegram file step produced.
+    - name: caption
+      value_type: text
+      required: false
+      display_name: Caption
+      description: Optional text under the file, at most 1024 characters.
+    - name: format
+      value_type: text
+      required: false
+      display_name: Format
+      description: text sends the message as written; html reads Telegram's HTML tags (b, i, u, s, a, code, pre, blockquote).
+    - name: file_name
+      value_type: text
+      required: false
+      display_name: File name
+      description: The name Telegram shows for the file. Defaults to the artifact's name.
+    - name: reply_to_message_id
+      value_type: integer
+      required: false
+      display_name: Reply to message ID
+      description: Send as a reply to this Telegram message ID. Leave empty for a normal message.
+    - name: disable_notification
+      value_type: boolean
+      required: false
+      display_name: Silent
+      description: Deliver without a notification sound.
+    outputs:
+    - name: delivered
+      value_type: boolean
+      display_name: Delivered
+      description: Whether Telegram accepted the request.
+    - name: provider_message_id
+      value_type: text
+      display_name: Telegram message ID
+      description: The ID of the message the step sent or acted on.
+    - name: channel_id
+      value_type: text
+      display_name: Channel ID
+      description: The channel the step used.
+    - name: external_effect_status
+      value_type: text
+    result_fields:
+    - result.delivered
+    - result.provider_message_id
+    - result.channel_id
+    error_codes:
+    - kind_invalid
+    - artifact_required
+    - format_invalid
+    - caption_too_long
+    - reply_to_message_id_invalid
+    - project_connection_required
+    - no_notify_channel
+    - channel_id_required
+    - unknown_channel_id
+    - channel_disabled
+    - channel_missing_notify
+    - file_too_large
+    - artifact_read_failed
+    - artifact_empty
+    - telegram_file_too_large
+    - telegram_markup_invalid
+    - telegram_reply_target_invalid
+    - bot_token_or_chat_id_required
+    - telegram_send_ambiguous
+    - telegram_request_rejected
+    - telegram_rate_limited
+    - telegram_chat_not_found
+    - telegram_bot_not_in_chat
+    - telegram_not_enough_rights
+    - telegram_request_failed
+  - operation_id: edit_message
+    display_name: Edit Message
+    description: Replace the text of a message the bot sent to one of its Telegram channels.
+    operation_kind: action
+    category: notification
+    connection_type_ids:
+    - telegram_bot
+    workflow_visible: true
+    inputs:
+    - name: connection_ref
+      value_type: connection_ref
+      required: true
+    - name: channel_id
+      value_type: text
+      required: false
+      display_name: Channel ID
+      description: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+    - name: message_id
+      value_type: integer
+      required: true
+      display_name: Message ID
+      description: The Telegram message ID, for example the provider_message_id a Send step returned.
+    - name: text
+      value_type: text
+      required: true
+      display_name: Message
+      description: The text, at most 4096 characters.
+    - name: format
+      value_type: text
+      required: false
+      display_name: Format
+      description: text sends the message as written; html reads Telegram's HTML tags (b, i, u, s, a, code, pre, blockquote).
+    - name: buttons
+      value_type: array
+      required: false
+      display_name: Buttons
+      description: 'Inline keyboard: a list of rows, each a list of buttons {"text": "Open", "url": "https://..."} or {"text": "Go", "callback_data": "my_data"}. callback_data is at most 64 bytes and may not start with "tgx:".'
+      schema:
+        type: array
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              text:
+                type: string
+              url:
+                type: string
+              callback_data:
+                type: string
+    - name: disable_web_page_preview
+      value_type: boolean
+      required: false
+      display_name: No link preview
+      description: Leave out the preview Telegram shows for the first link. Defaults to the connection setting.
+    outputs:
+    - name: delivered
+      value_type: boolean
+      display_name: Delivered
+      description: Whether Telegram accepted the request.
+    - name: provider_message_id
+      value_type: text
+      display_name: Telegram message ID
+      description: The ID of the message the step sent or acted on.
+    - name: channel_id
+      value_type: text
+      display_name: Channel ID
+      description: The channel the step used.
+    - name: external_effect_status
+      value_type: text
+    result_fields:
+    - result.delivered
+    - result.provider_message_id
+    - result.channel_id
+    error_codes:
+    - message_id_required
+    - message_id_invalid
+    - text_required
+    - format_invalid
+    - keyboard_invalid
+    - message_too_long
+    - project_connection_required
+    - no_notify_channel
+    - channel_id_required
+    - unknown_channel_id
+    - channel_disabled
+    - channel_missing_notify
+    - telegram_message_not_found
+    - telegram_message_not_modified
+    - telegram_edit_not_allowed
+    - telegram_markup_invalid
+    - telegram_keyboard_rejected
+    - bot_token_or_chat_id_required
+    - telegram_send_ambiguous
+    - telegram_request_rejected
+    - telegram_rate_limited
+    - telegram_chat_not_found
+    - telegram_bot_not_in_chat
+    - telegram_not_enough_rights
+    - telegram_request_failed
+  - operation_id: delete_message
+    display_name: Delete Message
+    description: Delete one message in a Telegram channel. Telegram deletes only messages younger than 48 hours; for an older message the step fails with telegram_delete_not_allowed.
+    operation_kind: action
+    category: notification
+    connection_type_ids:
+    - telegram_bot
+    workflow_visible: true
+    inputs:
+    - name: connection_ref
+      value_type: connection_ref
+      required: true
+    - name: channel_id
+      value_type: text
+      required: false
+      display_name: Channel ID
+      description: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+    - name: message_id
+      value_type: integer
+      required: true
+      display_name: Message ID
+      description: The Telegram message ID, for example the provider_message_id a Send step returned.
+    outputs:
+    - name: delivered
+      value_type: boolean
+      display_name: Delivered
+      description: Whether Telegram accepted the request.
+    - name: provider_message_id
+      value_type: text
+      display_name: Telegram message ID
+      description: The ID of the message the step sent or acted on.
+    - name: channel_id
+      value_type: text
+      display_name: Channel ID
+      description: The channel the step used.
+    - name: external_effect_status
+      value_type: text
+    result_fields:
+    - result.delivered
+    - result.provider_message_id
+    - result.channel_id
+    error_codes:
+    - message_id_required
+    - message_id_invalid
+    - project_connection_required
+    - no_notify_channel
+    - channel_id_required
+    - unknown_channel_id
+    - channel_disabled
+    - channel_missing_notify
+    - telegram_delete_not_allowed
+    - telegram_message_not_found
+    - bot_token_or_chat_id_required
+    - telegram_send_ambiguous
+    - telegram_request_rejected
+    - telegram_rate_limited
+    - telegram_chat_not_found
+    - telegram_bot_not_in_chat
+    - telegram_not_enough_rights
+    - telegram_request_failed
+  - operation_id: pin_message
+    display_name: Pin Message
+    description: Pin a message in a Telegram channel. In groups and channels the bot needs the right to pin messages.
+    operation_kind: action
+    category: notification
+    connection_type_ids:
+    - telegram_bot
+    workflow_visible: true
+    inputs:
+    - name: connection_ref
+      value_type: connection_ref
+      required: true
+    - name: channel_id
+      value_type: text
+      required: false
+      display_name: Channel ID
+      description: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+    - name: message_id
+      value_type: integer
+      required: true
+      display_name: Message ID
+      description: The Telegram message ID, for example the provider_message_id a Send step returned.
+    - name: disable_notification
+      value_type: boolean
+      required: false
+      display_name: Silent
+      description: Deliver without a notification sound.
+    outputs:
+    - name: delivered
+      value_type: boolean
+      display_name: Delivered
+      description: Whether Telegram accepted the request.
+    - name: provider_message_id
+      value_type: text
+      display_name: Telegram message ID
+      description: The ID of the message the step sent or acted on.
+    - name: channel_id
+      value_type: text
+      display_name: Channel ID
+      description: The channel the step used.
+    - name: external_effect_status
+      value_type: text
+    result_fields:
+    - result.delivered
+    - result.provider_message_id
+    - result.channel_id
+    error_codes:
+    - message_id_required
+    - message_id_invalid
+    - project_connection_required
+    - no_notify_channel
+    - channel_id_required
+    - unknown_channel_id
+    - channel_disabled
+    - channel_missing_notify
+    - telegram_message_not_found
+    - bot_token_or_chat_id_required
+    - telegram_send_ambiguous
+    - telegram_request_rejected
+    - telegram_rate_limited
+    - telegram_chat_not_found
+    - telegram_bot_not_in_chat
+    - telegram_not_enough_rights
+    - telegram_request_failed
+  - operation_id: unpin_message
+    display_name: Unpin Message
+    description: Unpin a message in a Telegram channel. Without a message ID Telegram unpins the most recently pinned message.
+    operation_kind: action
+    category: notification
+    connection_type_ids:
+    - telegram_bot
+    workflow_visible: true
+    inputs:
+    - name: connection_ref
+      value_type: connection_ref
+      required: true
+    - name: channel_id
+      value_type: text
+      required: false
+      display_name: Channel ID
+      description: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
+    - name: message_id
+      value_type: integer
+      required: false
+      display_name: Message ID
+      description: The Telegram message ID, for example the provider_message_id a Send step returned.
+    outputs:
+    - name: delivered
+      value_type: boolean
+      display_name: Delivered
+      description: Whether Telegram accepted the request.
+    - name: provider_message_id
+      value_type: text
+      display_name: Telegram message ID
+      description: The ID of the message the step sent or acted on.
+    - name: channel_id
+      value_type: text
+      display_name: Channel ID
+      description: The channel the step used.
+    - name: external_effect_status
+      value_type: text
+    result_fields:
+    - result.delivered
+    - result.provider_message_id
+    - result.channel_id
+    error_codes:
+    - message_id_invalid
+    - project_connection_required
+    - no_notify_channel
+    - channel_id_required
+    - unknown_channel_id
+    - channel_disabled
+    - channel_missing_notify
+    - telegram_message_not_found
+    - bot_token_or_chat_id_required
+    - telegram_send_ambiguous
+    - telegram_request_rejected
+    - telegram_rate_limited
+    - telegram_chat_not_found
+    - telegram_bot_not_in_chat
+    - telegram_not_enough_rights
+    - telegram_request_failed
+  - operation_id: get_file
+    display_name: Get Telegram File
+    description: Download a file the bot can see, by its Telegram file_id, into a workflow artifact. Telegram serves files up to 20 MB and keeps the download link valid for about an hour; the step downloads at once. A larger file is refused, never cut.
+    operation_kind: source
+    category: notification
+    connection_type_ids:
+    - telegram_bot
+    workflow_visible: true
+    inputs:
+    - name: connection_ref
+      value_type: connection_ref
+      required: true
+    - name: file_id
+      value_type: text
+      required: true
+      display_name: Telegram file ID
+      description: The file_id of a file the bot can see, for example the file_id of a New Telegram message trigger. Telegram serves files up to 20 MB.
+    outputs:
+    - name: artifact_handle
+      value_type: artifact_handle
+      display_name: File
+      description: The downloaded file as a workflow artifact.
+    - name: artifact_filename
+      value_type: text
+      display_name: File name
+      description: The file's name as Telegram stores it.
+    - name: size_bytes
+      value_type: integer
+      display_name: Size in bytes
+      description: The size of the downloaded file.
+    - name: sha256
+      value_type: text
+      display_name: SHA-256
+      description: The checksum of the downloaded file.
+    result_fields:
+    - result.artifact_handle
+    - result.artifact_filename
+    - result.size_bytes
+    - result.sha256
+    error_codes:
+    - file_id_required
+    - project_connection_required
+    - bot_token_or_chat_id_required
+    - file_too_large
+    - telegram_file_not_found
+    - telegram_download_failed
+    - artifact_write_failed
+    - telegram_request_rejected
+    - telegram_rate_limited
+    - telegram_send_ambiguous
+    - telegram_request_failed

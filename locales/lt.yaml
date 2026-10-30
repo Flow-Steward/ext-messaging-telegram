@@ -114,7 +114,7 @@ component.discovered_chats_grid.empty_state: Rastų pokalbių dar nėra
 component.discovered_chats_grid.empty_state_description: Nustatykite viešą pokalbį arba pridėkite botą į tikslinį pokalbį ir atnaujinkite paiešką.
 component.channels_form.title: Kanalai
 component.channels_form.field.channels.label: Telegram kanalai
-component.channels_form.field.channels.help: Pridėkite pavadintus projekto kanalus pranešimams ir žmogaus sprendimams.
+component.channels_form.field.channels.help: Pridėkite pavadintus projekto kanalus pranešimams, žmogaus sprendimams ir darbo eigų paleidimui.
 component.channels_form.field.channels.field.channel_id.label: Kanalo ID
 component.channels_form.field.channels.field.channel_id.placeholder: ops_alerts
 component.channels_form.field.channels.field.display_name.label: Rodomas pavadinimas
@@ -124,6 +124,7 @@ component.channels_form.field.channels.field.chat_id.placeholder: '-100123456789
 component.channels_form.field.channels.field.enabled.label: Įjungtas
 component.channels_form.field.channels.field.capabilities.notify.label: Pranešimų galimybė
 component.channels_form.field.channels.field.capabilities.human_decision.label: Žmogaus sprendimų galimybė
+component.channels_form.field.channels.field.capabilities.workflow_trigger.label: Darbo eigos paleidimo galimybė
 component.channels_form.section.channels.title: Kanalai
 component.channels_form.save_label: Išsaugoti kanalus
 component.channel_test_grid.title: Išbandyti kanalą
@@ -207,3 +208,166 @@ step.send_message.field.text.label: Žinutė
 step.send_message.field.text.help_text: Ne daugiau kaip 4096 simboliai. Susiekite šablono žingsnio rezultatą, kad išsiųstumėte sudarytą tekstą.
 step.send_message.field.format.label: Formatas
 step.send_message.field.disable_web_page_preview.label: Be nuorodos peržiūros
+
+# Telegram workflow steps beyond Send Message
+op.send_file.display_name: Siųsti failą
+op.send_file.description: Išsiųsti darbo eigos failą į vieną iš šio boto Telegram kanalų kaip nuotrauką, dokumentą, vaizdo įrašą, garso įrašą, balso žinutę ar animaciją. Nuotraukos iki 10 MB, kiti tipai iki 50 MB; didesnis failas atmetamas, o ne apkarpomas.
+op.send_file.input.channel_id.display_name: Kanalo ID
+op.send_file.input.channel_id.description: Kanalo ID iš puslapio „Pokalbiai ir kanalai“. Galima palikti tuščią, kai pranešimams įjungtas tik vienas kanalas.
+op.send_file.input.kind.display_name: Tipas
+op.send_file.input.kind.description: 'Kaip Telegram rodo failą: photo, document, video, audio, voice arba animation. Nuotrauka – iki 10 MB, kiti tipai – iki 50 MB.'
+op.send_file.input.artifact_handle.display_name: Failas
+op.send_file.input.artifact_handle.description: Siunčiamas failas (artefaktas), pavyzdžiui, gautas iš failo gavimo ar „Gauti Telegram failą“ žingsnio.
+op.send_file.input.caption.display_name: Antraštė
+op.send_file.input.caption.description: Nebūtinas tekstas po failu, ne daugiau kaip 1024 simboliai.
+op.send_file.input.format.display_name: Formatas
+op.send_file.input.format.description: text siunčia tekstą taip, kaip parašyta; html supranta Telegram HTML žymes (b, i, u, s, a, code, pre, blockquote).
+op.send_file.input.file_name.display_name: Failo pavadinimas
+op.send_file.input.file_name.description: Pavadinimas, kurį Telegram rodo prie failo. Pagal numatymą – artefakto pavadinimas.
+op.send_file.input.reply_to_message_id.display_name: Atsakyti į žinutės ID
+op.send_file.input.reply_to_message_id.description: Siųsti kaip atsakymą į šią Telegram žinutę. Palikite tuščią, jei tai paprasta žinutė.
+op.send_file.input.disable_notification.display_name: Tyliai
+op.send_file.input.disable_notification.description: Pristatyti be pranešimo garso.
+op.send_file.output.delivered.display_name: Pristatyta
+op.send_file.output.delivered.description: Ar Telegram priėmė užklausą.
+op.send_file.output.provider_message_id.display_name: Telegram žinutės ID
+op.send_file.output.provider_message_id.description: Žinutės, kurią žingsnis išsiuntė ar kurią pakeitė, ID.
+op.send_file.output.channel_id.display_name: Kanalo ID
+op.send_file.output.channel_id.description: Kanalas, kurį naudojo žingsnis.
+step.send_file.section: Siųsti Telegram failą
+step.send_file.field.channel_id.label: Kanalo ID
+step.send_file.field.channel_id.help_text: Kanalo ID iš puslapio „Pokalbiai ir kanalai“. Galima palikti tuščią, kai pranešimams įjungtas tik vienas kanalas.
+step.send_file.field.channel_id.placeholder: ops-alerts
+step.send_file.field.kind.label: Tipas
+step.send_file.field.kind.help_text: 'Kaip Telegram rodo failą: photo, document, video, audio, voice arba animation. Nuotrauka – iki 10 MB, kiti tipai – iki 50 MB.'
+step.send_file.field.artifact_handle.label: Failas
+step.send_file.field.artifact_handle.help_text: Siunčiamas failas (artefaktas), pavyzdžiui, gautas iš failo gavimo ar „Gauti Telegram failą“ žingsnio.
+step.send_file.field.caption.label: Antraštė
+step.send_file.field.caption.help_text: Nebūtinas tekstas po failu, ne daugiau kaip 1024 simboliai.
+step.send_file.field.format.label: Formatas
+step.send_file.field.format.help_text: text siunčia tekstą taip, kaip parašyta; html supranta Telegram HTML žymes (b, i, u, s, a, code, pre, blockquote).
+step.send_file.field.file_name.label: Failo pavadinimas
+step.send_file.field.file_name.help_text: Pavadinimas, kurį Telegram rodo prie failo. Pagal numatymą – artefakto pavadinimas.
+step.send_file.field.reply_to_message_id.label: Atsakyti į žinutės ID
+step.send_file.field.reply_to_message_id.help_text: Siųsti kaip atsakymą į šią Telegram žinutę. Palikite tuščią, jei tai paprasta žinutė.
+step.send_file.field.disable_notification.label: Tyliai
+step.send_file.field.disable_notification.help_text: Pristatyti be pranešimo garso.
+op.edit_message.display_name: Redaguoti žinutę
+op.edit_message.description: Pakeisti boto į vieną iš savo Telegram kanalų išsiųstos žinutės tekstą.
+op.edit_message.input.channel_id.display_name: Kanalo ID
+op.edit_message.input.channel_id.description: Kanalo ID iš puslapio „Pokalbiai ir kanalai“. Galima palikti tuščią, kai pranešimams įjungtas tik vienas kanalas.
+op.edit_message.input.message_id.display_name: Žinutės ID
+op.edit_message.input.message_id.description: Telegram žinutės ID, pavyzdžiui, provider_message_id, kurį grąžino siuntimo žingsnis.
+op.edit_message.input.text.display_name: Žinutė
+op.edit_message.input.text.description: Tekstas, ne daugiau kaip 4096 simboliai.
+op.edit_message.input.format.display_name: Formatas
+op.edit_message.input.format.description: text siunčia tekstą taip, kaip parašyta; html supranta Telegram HTML žymes (b, i, u, s, a, code, pre, blockquote).
+op.edit_message.input.buttons.display_name: Mygtukai
+op.edit_message.input.buttons.description: 'Eilutėje esantis klaviatūros mygtukų sąrašas: eilučių sąrašas, kiekviena eilutė – mygtukų sąrašas {"text": "Atidaryti", "url": "https://..."} arba {"text": "Eiti", "callback_data": "my_data"}. callback_data – ne daugiau kaip 64 baitai ir negali prasidėti „tgx:“.'
+op.edit_message.input.disable_web_page_preview.display_name: Be nuorodos peržiūros
+op.edit_message.input.disable_web_page_preview.description: Nerodyti peržiūros, kurią Telegram sukuria pirmai nuorodai. Pagal numatymą – kaip nustatyta ryšyje.
+op.edit_message.output.delivered.display_name: Pristatyta
+op.edit_message.output.delivered.description: Ar Telegram priėmė užklausą.
+op.edit_message.output.provider_message_id.display_name: Telegram žinutės ID
+op.edit_message.output.provider_message_id.description: Žinutės, kurią žingsnis išsiuntė ar kurią pakeitė, ID.
+op.edit_message.output.channel_id.display_name: Kanalo ID
+op.edit_message.output.channel_id.description: Kanalas, kurį naudojo žingsnis.
+step.edit_message.section: Redaguoti Telegram žinutę
+step.edit_message.field.channel_id.label: Kanalo ID
+step.edit_message.field.channel_id.help_text: Kanalo ID iš puslapio „Pokalbiai ir kanalai“. Galima palikti tuščią, kai pranešimams įjungtas tik vienas kanalas.
+step.edit_message.field.channel_id.placeholder: ops-alerts
+step.edit_message.field.message_id.label: Žinutės ID
+step.edit_message.field.message_id.help_text: Telegram žinutės ID, pavyzdžiui, provider_message_id, kurį grąžino siuntimo žingsnis.
+step.edit_message.field.text.label: Žinutė
+step.edit_message.field.text.help_text: Tekstas, ne daugiau kaip 4096 simboliai.
+step.edit_message.field.format.label: Formatas
+step.edit_message.field.format.help_text: text siunčia tekstą taip, kaip parašyta; html supranta Telegram HTML žymes (b, i, u, s, a, code, pre, blockquote).
+step.edit_message.field.buttons.label: Mygtukai
+step.edit_message.field.buttons.help_text: 'Eilutėje esantis klaviatūros mygtukų sąrašas: eilučių sąrašas, kiekviena eilutė – mygtukų sąrašas {"text": "Atidaryti", "url": "https://..."} arba {"text": "Eiti", "callback_data": "my_data"}. callback_data – ne daugiau kaip 64 baitai ir negali prasidėti „tgx:“.'
+step.edit_message.field.disable_web_page_preview.label: Be nuorodos peržiūros
+step.edit_message.field.disable_web_page_preview.help_text: Nerodyti peržiūros, kurią Telegram sukuria pirmai nuorodai. Pagal numatymą – kaip nustatyta ryšyje.
+op.delete_message.display_name: Ištrinti žinutę
+op.delete_message.description: Ištrinti vieną žinutę Telegram kanale. Telegram ištrina tik jaunesnes nei 48 val. žinutes; senesnei žinutei žingsnis baigiasi klaida telegram_delete_not_allowed.
+op.delete_message.input.channel_id.display_name: Kanalo ID
+op.delete_message.input.channel_id.description: Kanalo ID iš puslapio „Pokalbiai ir kanalai“. Galima palikti tuščią, kai pranešimams įjungtas tik vienas kanalas.
+op.delete_message.input.message_id.display_name: Žinutės ID
+op.delete_message.input.message_id.description: Telegram žinutės ID, pavyzdžiui, provider_message_id, kurį grąžino siuntimo žingsnis.
+op.delete_message.output.delivered.display_name: Pristatyta
+op.delete_message.output.delivered.description: Ar Telegram priėmė užklausą.
+op.delete_message.output.provider_message_id.display_name: Telegram žinutės ID
+op.delete_message.output.provider_message_id.description: Žinutės, kurią žingsnis išsiuntė ar kurią pakeitė, ID.
+op.delete_message.output.channel_id.display_name: Kanalo ID
+op.delete_message.output.channel_id.description: Kanalas, kurį naudojo žingsnis.
+step.delete_message.section: Ištrinti Telegram žinutę
+step.delete_message.field.channel_id.label: Kanalo ID
+step.delete_message.field.channel_id.help_text: Kanalo ID iš puslapio „Pokalbiai ir kanalai“. Galima palikti tuščią, kai pranešimams įjungtas tik vienas kanalas.
+step.delete_message.field.channel_id.placeholder: ops-alerts
+step.delete_message.field.message_id.label: Žinutės ID
+step.delete_message.field.message_id.help_text: Telegram žinutės ID, pavyzdžiui, provider_message_id, kurį grąžino siuntimo žingsnis.
+op.pin_message.display_name: Prisegti žinutę
+op.pin_message.description: Prisegti žinutę Telegram kanale. Grupėse ir kanaluose botas turi turėti teisę prisegti žinutes.
+op.pin_message.input.channel_id.display_name: Kanalo ID
+op.pin_message.input.channel_id.description: Kanalo ID iš puslapio „Pokalbiai ir kanalai“. Galima palikti tuščią, kai pranešimams įjungtas tik vienas kanalas.
+op.pin_message.input.message_id.display_name: Žinutės ID
+op.pin_message.input.message_id.description: Telegram žinutės ID, pavyzdžiui, provider_message_id, kurį grąžino siuntimo žingsnis.
+op.pin_message.input.disable_notification.display_name: Tyliai
+op.pin_message.input.disable_notification.description: Pristatyti be pranešimo garso.
+op.pin_message.output.delivered.display_name: Pristatyta
+op.pin_message.output.delivered.description: Ar Telegram priėmė užklausą.
+op.pin_message.output.provider_message_id.display_name: Telegram žinutės ID
+op.pin_message.output.provider_message_id.description: Žinutės, kurią žingsnis išsiuntė ar kurią pakeitė, ID.
+op.pin_message.output.channel_id.display_name: Kanalo ID
+op.pin_message.output.channel_id.description: Kanalas, kurį naudojo žingsnis.
+step.pin_message.section: Prisegti Telegram žinutę
+step.pin_message.field.channel_id.label: Kanalo ID
+step.pin_message.field.channel_id.help_text: Kanalo ID iš puslapio „Pokalbiai ir kanalai“. Galima palikti tuščią, kai pranešimams įjungtas tik vienas kanalas.
+step.pin_message.field.channel_id.placeholder: ops-alerts
+step.pin_message.field.message_id.label: Žinutės ID
+step.pin_message.field.message_id.help_text: Telegram žinutės ID, pavyzdžiui, provider_message_id, kurį grąžino siuntimo žingsnis.
+step.pin_message.field.disable_notification.label: Tyliai
+step.pin_message.field.disable_notification.help_text: Pristatyti be pranešimo garso.
+op.unpin_message.display_name: Atsegti žinutę
+op.unpin_message.description: Atsegti žinutę Telegram kanale. Be žinutės ID Telegram atsega naujausią prisegtą žinutę.
+op.unpin_message.input.channel_id.display_name: Kanalo ID
+op.unpin_message.input.channel_id.description: Kanalo ID iš puslapio „Pokalbiai ir kanalai“. Galima palikti tuščią, kai pranešimams įjungtas tik vienas kanalas.
+op.unpin_message.input.message_id.display_name: Žinutės ID
+op.unpin_message.input.message_id.description: Telegram žinutės ID, pavyzdžiui, provider_message_id, kurį grąžino siuntimo žingsnis.
+op.unpin_message.output.delivered.display_name: Pristatyta
+op.unpin_message.output.delivered.description: Ar Telegram priėmė užklausą.
+op.unpin_message.output.provider_message_id.display_name: Telegram žinutės ID
+op.unpin_message.output.provider_message_id.description: Žinutės, kurią žingsnis išsiuntė ar kurią pakeitė, ID.
+op.unpin_message.output.channel_id.display_name: Kanalo ID
+op.unpin_message.output.channel_id.description: Kanalas, kurį naudojo žingsnis.
+step.unpin_message.section: Atsegti Telegram žinutę
+step.unpin_message.field.channel_id.label: Kanalo ID
+step.unpin_message.field.channel_id.help_text: Kanalo ID iš puslapio „Pokalbiai ir kanalai“. Galima palikti tuščią, kai pranešimams įjungtas tik vienas kanalas.
+step.unpin_message.field.channel_id.placeholder: ops-alerts
+step.unpin_message.field.message_id.label: Žinutės ID
+step.unpin_message.field.message_id.help_text: Telegram žinutės ID, pavyzdžiui, provider_message_id, kurį grąžino siuntimo žingsnis.
+op.get_file.display_name: Gauti Telegram failą
+op.get_file.description: Atsisiųsti boto matomą failą pagal Telegram file_id į darbo eigos artefaktą. Telegram pateikia failus iki 20 MB, o atsisiuntimo nuoroda galioja apie valandą; žingsnis atsisiunčia iš karto. Didesnis failas atmetamas, o ne apkarpomas.
+op.get_file.input.file_id.display_name: Telegram failo ID
+op.get_file.input.file_id.description: Boto matomo failo file_id, pavyzdžiui, iš „Nauja Telegram žinutė“ paleidiklio. Telegram pateikia failus iki 20 MB.
+op.get_file.output.artifact_handle.display_name: Failas
+op.get_file.output.artifact_handle.description: Atsisiųstas failas kaip darbo eigos artefaktas.
+op.get_file.output.artifact_filename.display_name: Failo pavadinimas
+op.get_file.output.artifact_filename.description: Failo pavadinimas, kaip jį saugo Telegram.
+op.get_file.output.size_bytes.display_name: Dydis baitais
+op.get_file.output.size_bytes.description: Atsisiųsto failo dydis.
+op.get_file.output.sha256.display_name: SHA-256
+op.get_file.output.sha256.description: Atsisiųsto failo kontrolinė suma.
+step.get_file.section: Gauti Telegram failą
+step.get_file.field.file_id.label: Telegram failo ID
+step.get_file.field.file_id.help_text: Boto matomo failo file_id, pavyzdžiui, iš „Nauja Telegram žinutė“ paleidiklio. Telegram pateikia failus iki 20 MB.
+op.send_message.input.reply_to_message_id.display_name: Atsakyti į žinutės ID
+op.send_message.input.reply_to_message_id.description: Siųsti kaip atsakymą į šią Telegram žinutę. Palikite tuščią, jei tai paprasta žinutė.
+step.send_message.field.reply_to_message_id.label: Atsakyti į žinutės ID
+step.send_message.field.reply_to_message_id.help_text: Siųsti kaip atsakymą į šią Telegram žinutę. Palikite tuščią, jei tai paprasta žinutė.
+op.send_message.input.disable_notification.display_name: Tyliai
+op.send_message.input.disable_notification.description: Pristatyti be pranešimo garso.
+step.send_message.field.disable_notification.label: Tyliai
+step.send_message.field.disable_notification.help_text: Pristatyti be pranešimo garso.
+op.send_message.input.buttons.display_name: Mygtukai
+op.send_message.input.buttons.description: 'Eilutėje esantis klaviatūros mygtukų sąrašas: eilučių sąrašas, kiekviena eilutė – mygtukų sąrašas {"text": "Atidaryti", "url": "https://..."} arba {"text": "Eiti", "callback_data": "my_data"}. callback_data – ne daugiau kaip 64 baitai ir negali prasidėti „tgx:“.'
+step.send_message.field.buttons.label: Mygtukai
+step.send_message.field.buttons.help_text: 'Eilutėje esantis klaviatūros mygtukų sąrašas: eilučių sąrašas, kiekviena eilutė – mygtukų sąrašas {"text": "Atidaryti", "url": "https://..."} arba {"text": "Eiti", "callback_data": "my_data"}. callback_data – ne daugiau kaip 64 baitai ir negali prasidėti „tgx:“.'

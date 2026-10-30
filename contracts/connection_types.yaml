@@ -1,7 +1,7 @@
 connection_types:
   - connection_type_id: telegram_bot
     display_name: Telegram bot
-    description: A project-scoped Telegram bot with named notification and human-decision channels.
+    description: A project-scoped Telegram bot with named notification, human-decision and workflow-trigger channels.
     auth:
       type: static_secret
     config_schema:
@@ -28,6 +28,7 @@ connection_types:
                 properties:
                   notify: {type: boolean}
                   human_decision: {type: boolean}
+                  workflow_trigger: {type: boolean}
     ingress_schema:
       type: object
       additionalProperties: true

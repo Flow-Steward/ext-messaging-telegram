@@ -431,6 +431,10 @@ def main() -> int:
         request_action = _as_dict(_as_dict(request.get("request")).get("action"))
         if request_action:
             action = {**request_action, **action}
+        # Artifact grants travel beside the action, not inside it; the file steps
+        # read them from the action they are given.
+        if "artifacts" in request and "artifacts" not in action:
+            action = {**action, "artifacts": request["artifacts"]}
         result, _code = _handle_action(action)
         result = _public_response(result)
         if _state._REQUEST_HOST_MUTATIONS:

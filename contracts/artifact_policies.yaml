@@ -1,0 +1,17 @@
+policies:
+  - operation_id: send_file
+    inputs:
+    - kind: artifact
+      value_type: artifact_handle
+      binding_key: source_artifact
+      field: artifact_handle
+      required: true
+      max_size_bytes: 52428800
+  - operation_id: get_file
+    outputs:
+    - kind: artifact
+      binding_key: downloaded_file
+      filename: telegram_file.bin
+      content_type: application/octet-stream
+      max_size_bytes: 20971520
+      retention_class: run_window

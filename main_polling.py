@@ -177,17 +177,18 @@ def _poll_updates(
     highest_update_id = _coerce_int(next_state.get("last_update_id"))
     processed = 0
     connection_config: dict[str, Any] = {}
+    connection_id = ""
     if bl is not None and hasattr(bl, "get_project_connection"):
         try:
-            connection_config = _as_dict(
-                _as_dict(
-                    bl.get_project_connection(
-                        project_id=str(project_id),
-                        extension_id="flowsteward.telegram",
-                        enabled_only=True,
-                    )
-                ).get("connection_config")
+            connection_row = _as_dict(
+                bl.get_project_connection(
+                    project_id=str(project_id),
+                    extension_id="flowsteward.telegram",
+                    enabled_only=True,
+                )
             )
+            connection_config = _as_dict(connection_row.get("connection_config"))
+            connection_id = _as_str(connection_row.get("connection_id"))
         except Exception:
             connection_config = {}
     for raw_update in updates:
@@ -213,6 +214,7 @@ def _poll_updates(
                     },
                     "provider_secrets": {"bot_token": token},
                     "project_id": project_id,
+                    "connection_id": connection_id,
                     "ingress_config": next_state,
                 },
                 "query": {"project_id": project_id},
