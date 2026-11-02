@@ -1,4 +1,4 @@
-ext.display_name: Telegram pranešimai
+ext.display_name: Telegram
 ext.description: Siunčia Flow Steward pranešimus į Telegram pokalbius per Bot API.
 ext.account_scope_description: Telegram susiejimas nustatomas kiekvienam projektui atskirai — boto raktas, numatytieji nustatymai ir kanalai.
 category.notification.display_name: Pranešimai

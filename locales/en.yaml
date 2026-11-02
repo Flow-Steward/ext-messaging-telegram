@@ -1,4 +1,4 @@
-ext.display_name: Telegram Notifications
+ext.display_name: Telegram
 ext.description: Sends Flow Steward notifications to Telegram chats via the Bot API.
 ext.account_scope_description: Telegram binding is per-project; each project configures provider defaults, bot token, and named channels.
 category.notification.display_name: Notifications

@@ -11,7 +11,7 @@
 
 ## Requirements
 
-This release (1.3.0) speaks the host contract `extension_host_v2` with its final
+This release (1.3.1) speaks the host contract `extension_host_v2` with its final
 execution scope (`group_id`, `for_each_id`, `step_id`, `step_execution_id`)
 and is built on `flowsteward-extension-sdk` 0.4.0. Every request (query,
 action, notification delivery, inbound callback) with another contract, a
@@ -109,7 +109,7 @@ Important behavior:
 ## Send Message workflow step
 
 `send_message` is the one Telegram operation a workflow can use as a step
-(Action Step → Telegram Notifications → Send Message). It posts the text it is
+(Action Step → Telegram → Send Message). It posts the text it is
 given, not a rendered platform event, so a Template step in front of it composes
 any message from workflow data.
 
