@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "extension_id": "flowsteward.telegram",
+  "release_version": "1.3.2",
+  "asset": "icon.png",
+  "asset_sha256": "a651f8a125fceb7a71fee7014448274323f55b38387f06610c6c8a169eada9e7",
+  "dimensions": "512x512",
+  "official_source_page": "https://telegram.org/tour/screenshots",
+  "sources": [
+    {
+      "url": "https://telegram.org/file/464001088/1/bI7AJLo7oX4.287931.zip/374fe3b0a59dc60005",
+      "member": "Logo.png",
+      "sha256": "f91e9d7c30894cb0f00196581d4cc8867dd1139b2b1455de2c58071103475ca8",
+      "archive_sha256": "8b1924b30790b3557cd1a76c4028403035dae386f282aaa3d741c5bc5a03d8a7"
+    }
+  ],
+  "transformation": "Logo.png from official zip (NOT Logo_old.png); original flat blue circular white-paper-plane mark. PNG proportionally scaled.",
+  "renderer": "ImageMagick (original PNG input except WhatsApp SVG rendered at density 1600)",
+  "trademark_attribution": "The Telegram names and marks belong to Telegram. This independent integration identifies the supported service; it is not endorsed by or affiliated with the trademark owners.",
+  "usage_notes": "Official page expressly permits logos for illustrations, graphs, forwarding buttons; make clear you do not represent Telegram officially.",
+  "legal_agreement_accepted": false
+}

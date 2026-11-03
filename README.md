@@ -11,7 +11,7 @@
 
 ## Requirements
 
-This release (1.3.1) speaks the host contract `extension_host_v2` with its final
+This release (1.3.2) speaks the host contract `extension_host_v2` with its final
 execution scope (`group_id`, `for_each_id`, `step_id`, `step_execution_id`)
 and is built on `flowsteward-extension-sdk` 0.4.0. Every request (query,
 action, notification delivery, inbound callback) with another contract, a
@@ -42,7 +42,7 @@ dispatch is versioned.
 - `main_steps.py`: the other workflow steps (Send File, Edit, Delete, Pin, Unpin, Get Telegram File)
 - `main_transport_steps.py`: Bot API calls behind those steps (multipart upload, error mapping, download)
 - `health.py`: lightweight health probe
-- `icon.png`: the extension logo (Logo: icon.png, the Flow Steward wave mark; PNG, 128x128)
+- `icon.png`: the extension logo (the current official Telegram logo; PNG, 512x512)
 - `schemas/`
   - `config.schema.yaml`: provider defaults only
   - `secrets.schema.yaml`: secret values only
@@ -229,3 +229,5 @@ Recommended adaptation checklist:
 3. Keep bundle UI declarative in YAML.
 4. Expose `list_channels` plus channel mutation actions in the action/query manifests.
 5. Make delivery validate channel capability instead of silently falling back.
+
+Logo sources and attribution: [BRANDING.md](BRANDING.md).
