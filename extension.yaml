@@ -2,10 +2,14 @@ manifest_version: 2
 lifecycle: {data_schema_version: 1, data_migrations: []}
 extension_id: flowsteward.telegram
 kind: notification_provider
-version: 1.3.2
+version: 1.3.3
 display_name: Telegram
-description: Sends Flow Steward notifications to Telegram chats via the Bot API. Canonical
-  reference integration for notification providers.
+description: |-
+  Telegram brings project notifications, workflow messaging and human approvals into chats served by your bot. Send text or HTML messages, reply to an existing message, deliver files, update bot messages, and delete, pin or unpin messages. Download incoming files for document processing or other workflow steps. Named project channels make it easy to route messages to the intended chat.
+
+  Publish status updates, send reports, keep an incident message current or collect approve, reject and abort decisions when those actions are available in a workflow approval. Rejections can include a reason collected through a follow-up reply. A New Telegram message trigger can start workflows from explicitly enabled chats, carrying message text and file metadata.
+
+  Create a bot, save its token and configure each chat's notification, approval or workflow-trigger capabilities. Incoming updates support webhook or polling mode, and message-triggered workflows require a compatible Flow Steward host. Text messages support up to 4096 characters; file sending and downloading have separate limits. Message management also depends on the bot's Telegram permissions. Approval interactions are supported, while custom callback buttons do not provide a general button-click trigger in this release.
 vendor:
   name: Flow Steward
   support_url: https://github.com/Flow-Steward/ext-messaging-telegram/issues
@@ -16,7 +20,10 @@ listing:
   - telegram
   - notifications
   - chatops
-  summary: Send notifications and approval interactions through Telegram chats.
+  summary: |-
+    Send Telegram notifications and files, manage bot messages, collect approvals and start workflows from selected chats.
+  setup_summary: |-
+    Create a Telegram bot and save its token, then discover or add named chats and enable each required capability. For approvals or incoming messages, configure webhook or polling; enable workflow triggers for the selected chats and use a Core version supporting provider-event triggers.
 features:
 - notify
 - action

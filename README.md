@@ -1,6 +1,10 @@
 # Telegram Reference Extension
 
-`extensions/flowsteward_telegram` is the canonical Flow Steward reference for notification/chat providers that need:
+Telegram brings project notifications, workflow messaging and human approvals into chats served by your bot. Send text or HTML messages, reply to an existing message, deliver files, update bot messages, and delete, pin or unpin messages. Download incoming files for document processing or other workflow steps. Named project channels make it easy to route messages to the intended chat.
+
+Publish status updates, send reports, keep an incident message current or collect approve, reject and abort decisions when those actions are available in a workflow approval. Rejections can include a reason collected through a follow-up reply. A New Telegram message trigger can start workflows from explicitly enabled chats, carrying message text and file metadata.
+
+Create a bot, save its token and configure each chat's notification, approval or workflow-trigger capabilities. Incoming updates support webhook or polling mode, and message-triggered workflows require a compatible Flow Steward host. Text messages support up to 4096 characters; file sending and downloading have separate limits. Message management also depends on the bot's Telegram permissions. Approval interactions are supported, while custom callback buttons do not provide a general button-click trigger in this release.
 
 - project-scoped provider defaults
 - project-scoped secrets
@@ -11,7 +15,7 @@
 
 ## Requirements
 
-This release (1.3.2) speaks the host contract `extension_host_v2` with its final
+This release (1.3.3) speaks the host contract `extension_host_v2` with its final
 execution scope (`group_id`, `for_each_id`, `step_id`, `step_execution_id`)
 and is built on `flowsteward-extension-sdk` 0.4.0. Every request (query,
 action, notification delivery, inbound callback) with another contract, a
