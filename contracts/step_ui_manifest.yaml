@@ -11,7 +11,8 @@ forms:
         options:
           - {label: Plain text, value: text}
           - {label: Telegram HTML, value: html}
-      - {name: disable_web_page_preview, label: No link preview, widget_type: boolean, required: false}
+        help_text: "Choose text for plain text or html for supported Telegram HTML tags (b, i, u, s, a, code, pre, blockquote)."
+      - {name: disable_web_page_preview, label: No link preview, widget_type: boolean, required: false, help_text: "Disable the preview for the first link in the message. Leave empty to use the connection setting."}
       - {name: reply_to_message_id, label: Reply to message ID, widget_type: number, required: false, help_text: Send as a reply to this Telegram message ID. Leave empty for a normal message.}
       - {name: disable_notification, label: Silent, widget_type: boolean, required: false, help_text: Deliver without a notification sound.}
       - {name: buttons, label: Buttons, widget_type: json, required: false, help_text: 'Inline keyboard: a list of rows, each a list of buttons {"text": "Open", "url": "https://..."} or {"text": "Go", "callback_data": "my_data"}. callback_data is at most 64 bytes and may not start with "tgx:".'}
@@ -164,7 +165,7 @@ forms:
       required: false
       help_text: The Telegram message ID, for example the provider_message_id a Send step returned.
   - operation_id: get_file
-    title: Get Telegram file
+    title: "Download Telegram file"
     fields:
     - name: file_id
       label: Telegram file ID

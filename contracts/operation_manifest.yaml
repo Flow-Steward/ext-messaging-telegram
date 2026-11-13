@@ -1,7 +1,7 @@
 operations:
   - operation_id: send_message
-    display_name: Send Message
-    description: Post a message from the workflow to one of this bot's Telegram channels.
+    display_name: "Send Telegram message"
+    description: "Post a message from the workflow to one of this bot's Telegram channels. Create a Telegram bot project connection with its bot token and add an enabled chat on Chats & Channels; select that connection and channel for messaging steps. Example: Post a workflow completion summary to the ops-alerts project channel."
     operation_kind: action
     category: notification
     connection_type_ids: [telegram_bot]
@@ -92,8 +92,8 @@ operations:
       - {name: delivered, value_type: boolean}
       - {name: provider_message_id, value_type: text}
   - operation_id: send_file
-    display_name: Send File
-    description: Send a file from the workflow to one of this bot's Telegram channels as a photo, document, video, audio, voice message or animation. Photos up to 10 MB, other kinds up to 50 MB; a larger file is refused, never cut.
+    display_name: "Send Telegram file"
+    description: "Send a file from the workflow to one of this bot's Telegram channels as a photo, document, video, audio, voice message or animation. Photos up to 10 MB, other kinds up to 50 MB; a larger file is refused, never cut. Create a Telegram bot project connection with its bot token and add an enabled chat on Chats & Channels; select that connection and channel for messaging steps. Example: Send a generated PDF report artifact as kind=document to the configured team channel."
     operation_kind: action
     category: notification
     connection_type_ids:
@@ -189,8 +189,8 @@ operations:
     - telegram_not_enough_rights
     - telegram_request_failed
   - operation_id: edit_message
-    display_name: Edit Message
-    description: Replace the text of a message the bot sent to one of its Telegram channels.
+    display_name: "Edit Telegram message"
+    description: "Replace the text of a message the bot sent to one of its Telegram channels. Create a Telegram bot project connection with its bot token and add an enabled chat on Chats & Channels; select that connection and channel for messaging steps. Example: Replace an earlier bot status message with the final result using its returned provider_message_id."
     operation_kind: action
     category: notification
     connection_type_ids:
@@ -289,8 +289,8 @@ operations:
     - telegram_not_enough_rights
     - telegram_request_failed
   - operation_id: delete_message
-    display_name: Delete Message
-    description: Delete one message in a Telegram channel. Telegram deletes only messages younger than 48 hours; for an older message the step fails with telegram_delete_not_allowed.
+    display_name: "Delete Telegram message"
+    description: "Delete one message in a Telegram channel. Telegram deletes only messages younger than 48 hours; for an older message the step fails with telegram_delete_not_allowed. Create a Telegram bot project connection with its bot token and add an enabled chat on Chats & Channels; select that connection and channel for messaging steps. Example: Remove a temporary bot status message after its workflow finishes."
     operation_kind: action
     category: notification
     connection_type_ids:
@@ -349,8 +349,8 @@ operations:
     - telegram_not_enough_rights
     - telegram_request_failed
   - operation_id: pin_message
-    display_name: Pin Message
-    description: Pin a message in a Telegram channel. In groups and channels the bot needs the right to pin messages.
+    display_name: "Pin Telegram message"
+    description: "Pin a message in a Telegram channel. In groups and channels the bot needs the right to pin messages. Create a Telegram bot project connection with its bot token and add an enabled chat on Chats & Channels; select that connection and channel for messaging steps. Example: Pin the incident summary message in the configured team chat."
     operation_kind: action
     category: notification
     connection_type_ids:
@@ -413,8 +413,8 @@ operations:
     - telegram_not_enough_rights
     - telegram_request_failed
   - operation_id: unpin_message
-    display_name: Unpin Message
-    description: Unpin a message in a Telegram channel. Without a message ID Telegram unpins the most recently pinned message.
+    display_name: "Unpin Telegram message"
+    description: "Unpin a message in a Telegram channel. Without a message ID Telegram unpins the most recently pinned message. Create a Telegram bot project connection with its bot token and add an enabled chat on Chats & Channels; select that connection and channel for messaging steps. Example: Unpin a resolved incident message by its Telegram message ID."
     operation_kind: action
     category: notification
     connection_type_ids:
@@ -471,8 +471,8 @@ operations:
     - telegram_not_enough_rights
     - telegram_request_failed
   - operation_id: get_file
-    display_name: Get Telegram File
-    description: Download a file the bot can see, by its Telegram file_id, into a workflow artifact. Telegram serves files up to 20 MB and keeps the download link valid for about an hour; the step downloads at once. A larger file is refused, never cut.
+    display_name: "Download Telegram file"
+    description: "Download a file the bot can see, by its Telegram file_id, into a workflow artifact. Telegram serves files up to 20 MB and keeps the download link valid for about an hour; the step downloads at once. A larger file is refused, never cut. Select a Telegram bot project connection whose bot can access the incoming file. Example: Download the file_id from a New Telegram message trigger and pass the artifact to document processing."
     operation_kind: source
     category: notification
     connection_type_ids:

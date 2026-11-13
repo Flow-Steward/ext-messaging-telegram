@@ -2,7 +2,7 @@ manifest_version: 2
 lifecycle: {data_schema_version: 1, data_migrations: []}
 extension_id: flowsteward.telegram
 kind: notification_provider
-version: 1.3.3
+version: 1.3.4
 display_name: Telegram
 description: |-
   Telegram brings project notifications, workflow messaging and human approvals into chats served by your bot. Send text or HTML messages, reply to an existing message, deliver files, update bot messages, and delete, pin or unpin messages. Download incoming files for document processing or other workflow steps. Named project channels make it easy to route messages to the intended chat.
