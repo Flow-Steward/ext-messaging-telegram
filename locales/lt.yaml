@@ -185,8 +185,8 @@ component.delivery_grid.empty_state: Pristatymų dar nėra
 component.delivery_grid.empty_state_description: Pristatymai atsiras čia, kai bus išsiųsti pranešimai.
 
 # Send Message workflow step
-op.send_message.display_name: Siųsti žinutę
-op.send_message.description: Išsiųsti žinutę iš darbo eigos į vieną iš šio boto Telegram kanalų.
+op.send_message.display_name: "Siųsti Telegram žinutę"
+op.send_message.description: "Išsiųsti žinutę iš darbo eigos į vieną iš šio boto Telegram kanalų. Sukurkite projekto Telegram boto ryšį su boto prieigos raktu ir puslapyje „Pokalbiai ir kanalai“ pridėkite įjungtą pokalbį; žinučių siuntimo žingsniuose pasirinkite šį ryšį ir kanalą. Pavyzdys: Nusiųskite darbo eigos užbaigimo santrauką į projekto kanalą ops-alerts."
 op.send_message.input.channel_id.display_name: Kanalo ID
 op.send_message.input.channel_id.description: Kanalo ID iš puslapio „Pokalbiai ir kanalai“. Galima palikti tuščią, kai pranešimams įjungtas tik vienas kanalas.
 op.send_message.input.text.display_name: Žinutė
@@ -210,14 +210,14 @@ step.send_message.field.format.label: Formatas
 step.send_message.field.disable_web_page_preview.label: Be nuorodos peržiūros
 
 # Telegram workflow steps beyond Send Message
-op.send_file.display_name: Siųsti failą
-op.send_file.description: Išsiųsti darbo eigos failą į vieną iš šio boto Telegram kanalų kaip nuotrauką, dokumentą, vaizdo įrašą, garso įrašą, balso žinutę ar animaciją. Nuotraukos iki 10 MB, kiti tipai iki 50 MB; didesnis failas atmetamas, o ne apkarpomas.
+op.send_file.display_name: "Siųsti Telegram failą"
+op.send_file.description: "Išsiųsti darbo eigos failą į vieną iš šio boto Telegram kanalų kaip nuotrauką, dokumentą, vaizdo įrašą, garso įrašą, balso žinutę ar animaciją. Nuotraukos iki 10 MB, kiti tipai iki 50 MB; didesnis failas atmetamas, o ne apkarpomas. Sukurkite projekto Telegram boto ryšį su boto prieigos raktu ir puslapyje „Pokalbiai ir kanalai“ pridėkite įjungtą pokalbį; žinučių siuntimo žingsniuose pasirinkite šį ryšį ir kanalą. Pavyzdys: Nusiųskite sugeneruotos PDF ataskaitos artefaktą komandai, pasirinkę kind=document."
 op.send_file.input.channel_id.display_name: Kanalo ID
 op.send_file.input.channel_id.description: Kanalo ID iš puslapio „Pokalbiai ir kanalai“. Galima palikti tuščią, kai pranešimams įjungtas tik vienas kanalas.
 op.send_file.input.kind.display_name: Tipas
 op.send_file.input.kind.description: 'Kaip Telegram rodo failą: photo, document, video, audio, voice arba animation. Nuotrauka – iki 10 MB, kiti tipai – iki 50 MB.'
 op.send_file.input.artifact_handle.display_name: Failas
-op.send_file.input.artifact_handle.description: Siunčiamas failas (artefaktas), pavyzdžiui, gautas iš failo gavimo ar „Gauti Telegram failą“ žingsnio.
+op.send_file.input.artifact_handle.description: Siunčiamas failas (artefaktas), pavyzdžiui, gautas iš failo gavimo ar „Atsisiųsti Telegram failą“ žingsnio.
 op.send_file.input.caption.display_name: Antraštė
 op.send_file.input.caption.description: Nebūtinas tekstas po failu, ne daugiau kaip 1024 simboliai.
 op.send_file.input.format.display_name: Formatas
@@ -241,7 +241,7 @@ step.send_file.field.channel_id.placeholder: ops-alerts
 step.send_file.field.kind.label: Tipas
 step.send_file.field.kind.help_text: 'Kaip Telegram rodo failą: photo, document, video, audio, voice arba animation. Nuotrauka – iki 10 MB, kiti tipai – iki 50 MB.'
 step.send_file.field.artifact_handle.label: Failas
-step.send_file.field.artifact_handle.help_text: Siunčiamas failas (artefaktas), pavyzdžiui, gautas iš failo gavimo ar „Gauti Telegram failą“ žingsnio.
+step.send_file.field.artifact_handle.help_text: Siunčiamas failas (artefaktas), pavyzdžiui, gautas iš failo gavimo ar „Atsisiųsti Telegram failą“ žingsnio.
 step.send_file.field.caption.label: Antraštė
 step.send_file.field.caption.help_text: Nebūtinas tekstas po failu, ne daugiau kaip 1024 simboliai.
 step.send_file.field.format.label: Formatas
@@ -252,8 +252,8 @@ step.send_file.field.reply_to_message_id.label: Atsakyti į žinutės ID
 step.send_file.field.reply_to_message_id.help_text: Siųsti kaip atsakymą į šią Telegram žinutę. Palikite tuščią, jei tai paprasta žinutė.
 step.send_file.field.disable_notification.label: Tyliai
 step.send_file.field.disable_notification.help_text: Pristatyti be pranešimo garso.
-op.edit_message.display_name: Redaguoti žinutę
-op.edit_message.description: Pakeisti boto į vieną iš savo Telegram kanalų išsiųstos žinutės tekstą.
+op.edit_message.display_name: "Redaguoti Telegram žinutę"
+op.edit_message.description: "Pakeisti boto į vieną iš savo Telegram kanalų išsiųstos žinutės tekstą. Sukurkite projekto Telegram boto ryšį su boto prieigos raktu ir puslapyje „Pokalbiai ir kanalai“ pridėkite įjungtą pokalbį; žinučių siuntimo žingsniuose pasirinkite šį ryšį ir kanalą. Pavyzdys: Pakeiskite ankstesnę boto būsenos žinutę galutiniu rezultatu pagal grąžintą provider_message_id."
 op.edit_message.input.channel_id.display_name: Kanalo ID
 op.edit_message.input.channel_id.description: Kanalo ID iš puslapio „Pokalbiai ir kanalai“. Galima palikti tuščią, kai pranešimams įjungtas tik vienas kanalas.
 op.edit_message.input.message_id.display_name: Žinutės ID
@@ -286,8 +286,8 @@ step.edit_message.field.buttons.label: Mygtukai
 step.edit_message.field.buttons.help_text: 'Eilutėje esantis klaviatūros mygtukų sąrašas: eilučių sąrašas, kiekviena eilutė – mygtukų sąrašas {"text": "Atidaryti", "url": "https://..."} arba {"text": "Eiti", "callback_data": "my_data"}. callback_data – ne daugiau kaip 64 baitai ir negali prasidėti „tgx:“.'
 step.edit_message.field.disable_web_page_preview.label: Be nuorodos peržiūros
 step.edit_message.field.disable_web_page_preview.help_text: Nerodyti peržiūros, kurią Telegram sukuria pirmai nuorodai. Pagal numatymą – kaip nustatyta ryšyje.
-op.delete_message.display_name: Ištrinti žinutę
-op.delete_message.description: Ištrinti vieną žinutę Telegram kanale. Telegram ištrina tik jaunesnes nei 48 val. žinutes; senesnei žinutei žingsnis baigiasi klaida telegram_delete_not_allowed.
+op.delete_message.display_name: "Ištrinti Telegram žinutę"
+op.delete_message.description: "Ištrinti vieną žinutę Telegram kanale. Telegram ištrina tik jaunesnes nei 48 val. žinutes; senesnei žinutei žingsnis baigiasi klaida telegram_delete_not_allowed. Sukurkite projekto Telegram boto ryšį su boto prieigos raktu ir puslapyje „Pokalbiai ir kanalai“ pridėkite įjungtą pokalbį; žinučių siuntimo žingsniuose pasirinkite šį ryšį ir kanalą. Pavyzdys: Pašalinkite laikiną boto būsenos žinutę pasibaigus darbo eigai."
 op.delete_message.input.channel_id.display_name: Kanalo ID
 op.delete_message.input.channel_id.description: Kanalo ID iš puslapio „Pokalbiai ir kanalai“. Galima palikti tuščią, kai pranešimams įjungtas tik vienas kanalas.
 op.delete_message.input.message_id.display_name: Žinutės ID
@@ -304,8 +304,8 @@ step.delete_message.field.channel_id.help_text: Kanalo ID iš puslapio „Pokalb
 step.delete_message.field.channel_id.placeholder: ops-alerts
 step.delete_message.field.message_id.label: Žinutės ID
 step.delete_message.field.message_id.help_text: Telegram žinutės ID, pavyzdžiui, provider_message_id, kurį grąžino siuntimo žingsnis.
-op.pin_message.display_name: Prisegti žinutę
-op.pin_message.description: Prisegti žinutę Telegram kanale. Grupėse ir kanaluose botas turi turėti teisę prisegti žinutes.
+op.pin_message.display_name: "Prisegti Telegram žinutę"
+op.pin_message.description: "Prisegti žinutę Telegram kanale. Grupėse ir kanaluose botas turi turėti teisę prisegti žinutes. Sukurkite projekto Telegram boto ryšį su boto prieigos raktu ir puslapyje „Pokalbiai ir kanalai“ pridėkite įjungtą pokalbį; žinučių siuntimo žingsniuose pasirinkite šį ryšį ir kanalą. Pavyzdys: Prisekite incidento santraukos žinutę sukonfigūruotame komandos pokalbyje."
 op.pin_message.input.channel_id.display_name: Kanalo ID
 op.pin_message.input.channel_id.description: Kanalo ID iš puslapio „Pokalbiai ir kanalai“. Galima palikti tuščią, kai pranešimams įjungtas tik vienas kanalas.
 op.pin_message.input.message_id.display_name: Žinutės ID
@@ -326,8 +326,8 @@ step.pin_message.field.message_id.label: Žinutės ID
 step.pin_message.field.message_id.help_text: Telegram žinutės ID, pavyzdžiui, provider_message_id, kurį grąžino siuntimo žingsnis.
 step.pin_message.field.disable_notification.label: Tyliai
 step.pin_message.field.disable_notification.help_text: Pristatyti be pranešimo garso.
-op.unpin_message.display_name: Atsegti žinutę
-op.unpin_message.description: Atsegti žinutę Telegram kanale. Be žinutės ID Telegram atsega naujausią prisegtą žinutę.
+op.unpin_message.display_name: "Atsegti Telegram žinutę"
+op.unpin_message.description: "Atsegti žinutę Telegram kanale. Be žinutės ID Telegram atsega naujausią prisegtą žinutę. Sukurkite projekto Telegram boto ryšį su boto prieigos raktu ir puslapyje „Pokalbiai ir kanalai“ pridėkite įjungtą pokalbį; žinučių siuntimo žingsniuose pasirinkite šį ryšį ir kanalą. Pavyzdys: Atsekite išspręsto incidento žinutę pagal jos Telegram ID."
 op.unpin_message.input.channel_id.display_name: Kanalo ID
 op.unpin_message.input.channel_id.description: Kanalo ID iš puslapio „Pokalbiai ir kanalai“. Galima palikti tuščią, kai pranešimams įjungtas tik vienas kanalas.
 op.unpin_message.input.message_id.display_name: Žinutės ID
@@ -344,8 +344,8 @@ step.unpin_message.field.channel_id.help_text: Kanalo ID iš puslapio „Pokalbi
 step.unpin_message.field.channel_id.placeholder: ops-alerts
 step.unpin_message.field.message_id.label: Žinutės ID
 step.unpin_message.field.message_id.help_text: Telegram žinutės ID, pavyzdžiui, provider_message_id, kurį grąžino siuntimo žingsnis.
-op.get_file.display_name: Gauti Telegram failą
-op.get_file.description: Atsisiųsti boto matomą failą pagal Telegram file_id į darbo eigos artefaktą. Telegram pateikia failus iki 20 MB, o atsisiuntimo nuoroda galioja apie valandą; žingsnis atsisiunčia iš karto. Didesnis failas atmetamas, o ne apkarpomas.
+op.get_file.display_name: "Atsisiųsti Telegram failą"
+op.get_file.description: "Atsisiųsti boto matomą failą pagal Telegram file_id į darbo eigos artefaktą. Telegram pateikia failus iki 20 MB, o atsisiuntimo nuoroda galioja apie valandą; žingsnis atsisiunčia iš karto. Didesnis failas atmetamas, o ne apkarpomas. Pasirinkite projekto Telegram boto ryšį, kurio botas gali pasiekti gaunamą failą. Pavyzdys: Atsisiųskite failą pagal paleidiklio „Nauja Telegram žinutė“ file_id ir perduokite artefaktą dokumentų apdorojimui."
 op.get_file.input.file_id.display_name: Telegram failo ID
 op.get_file.input.file_id.description: Boto matomo failo file_id, pavyzdžiui, iš „Nauja Telegram žinutė“ paleidiklio. Telegram pateikia failus iki 20 MB.
 op.get_file.output.artifact_handle.display_name: Failas
@@ -356,7 +356,7 @@ op.get_file.output.size_bytes.display_name: Dydis baitais
 op.get_file.output.size_bytes.description: Atsisiųsto failo dydis.
 op.get_file.output.sha256.display_name: SHA-256
 op.get_file.output.sha256.description: Atsisiųsto failo kontrolinė suma.
-step.get_file.section: Gauti Telegram failą
+step.get_file.section: "Atsisiųsti Telegram failą"
 step.get_file.field.file_id.label: Telegram failo ID
 step.get_file.field.file_id.help_text: Boto matomo failo file_id, pavyzdžiui, iš „Nauja Telegram žinutė“ paleidiklio. Telegram pateikia failus iki 20 MB.
 op.send_message.input.reply_to_message_id.display_name: Atsakyti į žinutės ID

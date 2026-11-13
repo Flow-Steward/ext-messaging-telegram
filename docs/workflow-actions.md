@@ -28,7 +28,7 @@ Inputs:
 
 - `channel_id`: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
 - `kind`: How Telegram shows the file: photo, document, video, audio, voice or animation. A photo is limited to 10 MB, every other kind to 50 MB.
-- `artifact_handle`: The file (an artifact) to send, for example one a Fetch File or Get Telegram file step produced.
+- `artifact_handle`: The file (an artifact) to send, for example one a Download remote file or Download Telegram file step produced.
 - `caption`: Optional text under the file, at most 1024 characters.
 - `format`: text sends the message as written; html reads Telegram's HTML tags (b, i, u, s, a, code, pre, blockquote).
 - `file_name`: The name Telegram shows for the file. Defaults to the artifact's name.

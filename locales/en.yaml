@@ -185,8 +185,8 @@ component.delivery_grid.empty_state: No deliveries yet
 component.delivery_grid.empty_state_description: Deliveries will appear here once notifications are dispatched.
 
 # Send Message workflow step
-op.send_message.display_name: Send Message
-op.send_message.description: Post a message from the workflow to one of this bot's Telegram channels.
+op.send_message.display_name: "Send Telegram message"
+op.send_message.description: "Post a message from the workflow to one of this bot's Telegram channels. Create a Telegram bot project connection with its bot token and add an enabled chat on Chats & Channels; select that connection and channel for messaging steps. Example: Post a workflow completion summary to the ops-alerts project channel."
 op.send_message.input.channel_id.display_name: Channel ID
 op.send_message.input.channel_id.description: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
 op.send_message.input.text.display_name: Message
@@ -211,14 +211,14 @@ step.send_message.field.format.label: Format
 step.send_message.field.disable_web_page_preview.label: No link preview
 
 # Telegram workflow steps beyond Send Message
-op.send_file.display_name: Send File
-op.send_file.description: Send a file from the workflow to one of this bot's Telegram channels as a photo, document, video, audio, voice message or animation. Photos up to 10 MB, other kinds up to 50 MB; a larger file is refused, never cut.
+op.send_file.display_name: "Send Telegram file"
+op.send_file.description: "Send a file from the workflow to one of this bot's Telegram channels as a photo, document, video, audio, voice message or animation. Photos up to 10 MB, other kinds up to 50 MB; a larger file is refused, never cut. Create a Telegram bot project connection with its bot token and add an enabled chat on Chats & Channels; select that connection and channel for messaging steps. Example: Send a generated PDF report artifact as kind=document to the configured team channel."
 op.send_file.input.channel_id.display_name: Channel ID
 op.send_file.input.channel_id.description: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
 op.send_file.input.kind.display_name: Kind
 op.send_file.input.kind.description: 'How Telegram shows the file: photo, document, video, audio, voice or animation. A photo is limited to 10 MB, every other kind to 50 MB.'
 op.send_file.input.artifact_handle.display_name: File
-op.send_file.input.artifact_handle.description: The file (an artifact) to send, for example one a Fetch File or Get Telegram file step produced.
+op.send_file.input.artifact_handle.description: The file (an artifact) to send, for example one a Download remote file or Download Telegram file step produced.
 op.send_file.input.caption.display_name: Caption
 op.send_file.input.caption.description: Optional text under the file, at most 1024 characters.
 op.send_file.input.format.display_name: Format
@@ -242,7 +242,7 @@ step.send_file.field.channel_id.placeholder: ops-alerts
 step.send_file.field.kind.label: Kind
 step.send_file.field.kind.help_text: 'How Telegram shows the file: photo, document, video, audio, voice or animation. A photo is limited to 10 MB, every other kind to 50 MB.'
 step.send_file.field.artifact_handle.label: File
-step.send_file.field.artifact_handle.help_text: The file (an artifact) to send, for example one a Fetch File or Get Telegram file step produced.
+step.send_file.field.artifact_handle.help_text: The file (an artifact) to send, for example one a Download remote file or Download Telegram file step produced.
 step.send_file.field.caption.label: Caption
 step.send_file.field.caption.help_text: Optional text under the file, at most 1024 characters.
 step.send_file.field.format.label: Format
@@ -253,8 +253,8 @@ step.send_file.field.reply_to_message_id.label: Reply to message ID
 step.send_file.field.reply_to_message_id.help_text: Send as a reply to this Telegram message ID. Leave empty for a normal message.
 step.send_file.field.disable_notification.label: Silent
 step.send_file.field.disable_notification.help_text: Deliver without a notification sound.
-op.edit_message.display_name: Edit Message
-op.edit_message.description: Replace the text of a message the bot sent to one of its Telegram channels.
+op.edit_message.display_name: "Edit Telegram message"
+op.edit_message.description: "Replace the text of a message the bot sent to one of its Telegram channels. Create a Telegram bot project connection with its bot token and add an enabled chat on Chats & Channels; select that connection and channel for messaging steps. Example: Replace an earlier bot status message with the final result using its returned provider_message_id."
 op.edit_message.input.channel_id.display_name: Channel ID
 op.edit_message.input.channel_id.description: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
 op.edit_message.input.message_id.display_name: Message ID
@@ -287,8 +287,8 @@ step.edit_message.field.buttons.label: Buttons
 step.edit_message.field.buttons.help_text: 'Inline keyboard: a list of rows, each a list of buttons {"text": "Open", "url": "https://..."} or {"text": "Go", "callback_data": "my_data"}. callback_data is at most 64 bytes and may not start with "tgx:".'
 step.edit_message.field.disable_web_page_preview.label: No link preview
 step.edit_message.field.disable_web_page_preview.help_text: Leave out the preview Telegram shows for the first link. Defaults to the connection setting.
-op.delete_message.display_name: Delete Message
-op.delete_message.description: Delete one message in a Telegram channel. Telegram deletes only messages younger than 48 hours; for an older message the step fails with telegram_delete_not_allowed.
+op.delete_message.display_name: "Delete Telegram message"
+op.delete_message.description: "Delete one message in a Telegram channel. Telegram deletes only messages younger than 48 hours; for an older message the step fails with telegram_delete_not_allowed. Create a Telegram bot project connection with its bot token and add an enabled chat on Chats & Channels; select that connection and channel for messaging steps. Example: Remove a temporary bot status message after its workflow finishes."
 op.delete_message.input.channel_id.display_name: Channel ID
 op.delete_message.input.channel_id.description: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
 op.delete_message.input.message_id.display_name: Message ID
@@ -305,8 +305,8 @@ step.delete_message.field.channel_id.help_text: The ID of a channel on the Chats
 step.delete_message.field.channel_id.placeholder: ops-alerts
 step.delete_message.field.message_id.label: Message ID
 step.delete_message.field.message_id.help_text: The Telegram message ID, for example the provider_message_id a Send step returned.
-op.pin_message.display_name: Pin Message
-op.pin_message.description: Pin a message in a Telegram channel. In groups and channels the bot needs the right to pin messages.
+op.pin_message.display_name: "Pin Telegram message"
+op.pin_message.description: "Pin a message in a Telegram channel. In groups and channels the bot needs the right to pin messages. Create a Telegram bot project connection with its bot token and add an enabled chat on Chats & Channels; select that connection and channel for messaging steps. Example: Pin the incident summary message in the configured team chat."
 op.pin_message.input.channel_id.display_name: Channel ID
 op.pin_message.input.channel_id.description: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
 op.pin_message.input.message_id.display_name: Message ID
@@ -327,8 +327,8 @@ step.pin_message.field.message_id.label: Message ID
 step.pin_message.field.message_id.help_text: The Telegram message ID, for example the provider_message_id a Send step returned.
 step.pin_message.field.disable_notification.label: Silent
 step.pin_message.field.disable_notification.help_text: Deliver without a notification sound.
-op.unpin_message.display_name: Unpin Message
-op.unpin_message.description: Unpin a message in a Telegram channel. Without a message ID Telegram unpins the most recently pinned message.
+op.unpin_message.display_name: "Unpin Telegram message"
+op.unpin_message.description: "Unpin a message in a Telegram channel. Without a message ID Telegram unpins the most recently pinned message. Create a Telegram bot project connection with its bot token and add an enabled chat on Chats & Channels; select that connection and channel for messaging steps. Example: Unpin a resolved incident message by its Telegram message ID."
 op.unpin_message.input.channel_id.display_name: Channel ID
 op.unpin_message.input.channel_id.description: The ID of a channel on the Chats & Channels page. May be left empty when only one channel is enabled for notifications.
 op.unpin_message.input.message_id.display_name: Message ID
@@ -345,8 +345,8 @@ step.unpin_message.field.channel_id.help_text: The ID of a channel on the Chats 
 step.unpin_message.field.channel_id.placeholder: ops-alerts
 step.unpin_message.field.message_id.label: Message ID
 step.unpin_message.field.message_id.help_text: The Telegram message ID, for example the provider_message_id a Send step returned.
-op.get_file.display_name: Get Telegram File
-op.get_file.description: Download a file the bot can see, by its Telegram file_id, into a workflow artifact. Telegram serves files up to 20 MB and keeps the download link valid for about an hour; the step downloads at once. A larger file is refused, never cut.
+op.get_file.display_name: "Download Telegram file"
+op.get_file.description: "Download a file the bot can see, by its Telegram file_id, into a workflow artifact. Telegram serves files up to 20 MB and keeps the download link valid for about an hour; the step downloads at once. A larger file is refused, never cut. Select a Telegram bot project connection whose bot can access the incoming file. Example: Download the file_id from a New Telegram message trigger and pass the artifact to document processing."
 op.get_file.input.file_id.display_name: Telegram file ID
 op.get_file.input.file_id.description: The file_id of a file the bot can see, for example the file_id of a New Telegram message trigger. Telegram serves files up to 20 MB.
 op.get_file.output.artifact_handle.display_name: File
@@ -357,7 +357,7 @@ op.get_file.output.size_bytes.display_name: Size in bytes
 op.get_file.output.size_bytes.description: The size of the downloaded file.
 op.get_file.output.sha256.display_name: SHA-256
 op.get_file.output.sha256.description: The checksum of the downloaded file.
-step.get_file.section: Get Telegram file
+step.get_file.section: "Download Telegram file"
 step.get_file.field.file_id.label: Telegram file ID
 step.get_file.field.file_id.help_text: The file_id of a file the bot can see, for example the file_id of a New Telegram message trigger. Telegram serves files up to 20 MB.
 op.send_message.input.reply_to_message_id.display_name: Reply to message ID

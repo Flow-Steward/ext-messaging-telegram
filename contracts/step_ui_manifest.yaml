@@ -47,7 +47,7 @@ forms:
       label: File
       widget_type: artifact_picker
       required: true
-      help_text: The file (an artifact) to send, for example one a Fetch File or Get Telegram file step produced.
+      help_text: The file (an artifact) to send, for example one a Download remote file or Download Telegram file step produced.
     - name: caption
       label: Caption
       widget_type: textarea

@@ -117,7 +117,7 @@ operations:
       value_type: artifact_handle
       required: true
       display_name: File
-      description: The file (an artifact) to send, for example one a Fetch File or Get Telegram file step produced.
+      description: The file (an artifact) to send, for example one a Download remote file or Download Telegram file step produced.
     - name: caption
       value_type: text
       required: false
