@@ -25,7 +25,7 @@ def _invoke(request: dict, timeout: int = 5) -> tuple[dict, int]:
 
 
 _UI = BUNDLE_ROOT / "ui"
-_PAGE_ORDER = ["overview", "setup", "chats_channels", "inbound", "deliveries"]
+_PAGE_ORDER = ["overview", "setup", "chats_channels", "inbound", "deliveries", "support"]
 
 
 def _page(page_id: str) -> dict:

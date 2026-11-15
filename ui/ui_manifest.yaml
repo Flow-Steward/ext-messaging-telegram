@@ -5,3 +5,4 @@ pages:
   - ref: pages/chats_channels.yaml
   - ref: pages/inbound.yaml
   - ref: pages/deliveries.yaml
+  - ref: pages/support.yaml

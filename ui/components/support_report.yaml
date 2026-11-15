@@ -1,0 +1,11 @@
+component_id: support_report
+type: markdown
+title: What to include in a report
+body: |
+  - The extension version and your Flow Steward version.
+  - What you did, what you expected and what happened instead, with the exact error message.
+  - The workflow, step or action involved, and when it happened.
+
+  If a developer asks for more detail, they will tell you what to collect. **Monitoring → Download diagnostics** exports a report you can review before sharing.
+
+  Issues are public. Never include passwords, API keys, tokens, connection strings or customer data.

@@ -15,7 +15,7 @@ Create a bot, save its token and configure each chat's notification, approval or
 
 ## Requirements
 
-This release (1.3.4) speaks the host contract `extension_host_v2` with its final
+This release (1.3.5) speaks the host contract `extension_host_v2` with its final
 execution scope (`group_id`, `for_each_id`, `step_id`, `step_execution_id`)
 and is built on `flowsteward-extension-sdk` 0.4.0. Every request (query,
 action, notification delivery, inbound callback) with another contract, a

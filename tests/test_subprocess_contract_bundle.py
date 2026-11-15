@@ -29,7 +29,7 @@ class TestTelegramBundleValidity:
     def test_ui_manifest_has_multiple_pages(self):
         ui = yaml.safe_load((BUNDLE_ROOT / "ui" / "ui_manifest.yaml").read_text()) or {}
         pages = ui.get("pages") or []
-        assert len(pages) == 5
+        assert len(pages) == 6
         page_ids: set[str] = set()
         for page in pages:
             if not isinstance(page, dict):

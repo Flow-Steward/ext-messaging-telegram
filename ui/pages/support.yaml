@@ -1,0 +1,7 @@
+page_id: support
+title: Support
+description: Where to report a problem, ask a question or request a feature.
+project_scoped: false
+components:
+  - ref: ../components/support_contact.yaml
+  - ref: ../components/support_report.yaml
